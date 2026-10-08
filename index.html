@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Steal a Nugget</title>
+<meta name="description" content="Steal raw nuggets from fast food workers, outrun them, fry them for a random rarity and earn money on your plot. A Roblox game.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Chivo+Mono:wght@500;700&family=Lilita+One&display=swap">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cur-ring"></span><span class="cur-dot"></span></div>
+<div class="fry-meter" aria-hidden="true"><span id="fryMeter"></span></div>
+<div class="pull-flash" id="pullFlash" aria-hidden="true"><span id="pullFlashText">Mythic!</span></div>
+
+<header class="nav">
+  <div class="wrap">
+    <div class="nav-pill">
+      <a class="brand" href="#top" aria-label="Steal a Nugget home">
+        <img src="logo.webp" alt="" width="44" height="44">
+        <span>Steal a <b>Nugget</b></span>
+      </a>
+      <nav class="nav-links" id="navLinks" aria-label="Sections">
+        <span class="nav-blob" id="navBlob" aria-hidden="true"></span>
+        <a href="#how">How to play</a>
+        <a href="#fryer">Fryer</a>
+        <a href="#rarities">Rarities</a>
+        <a href="#rains">Rains</a>
+        <a href="#pets">Pets</a>
+        <a href="#bosses">Bosses</a>
+      </nav>
+      <a class="btn btn-ghost btn-sm nav-guide" href="guide.html">Guide</a>
+      <button class="snd" id="soundBtn" type="button" aria-pressed="true" aria-label="Sound effects on">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path class="snd-body" d="M4 9h4l5-4v14l-5-4H4Z" fill="currentColor"/><path class="snd-wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="snd-x" d="m16 9 6 6m0-6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <a class="btn btn-play btn-sm magnetic" href="https://www.roblox.com/games/130647941553612/Steal-a-Nugget" target="_blank" rel="noopener">Play</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+    <div class="hero-pattern" aria-hidden="true"></div>
+    <div class="hero-bgtext" aria-hidden="true">
+      <div class="bgt-track"><span>Steal · Run · Fry · Earn ·</span><span>Steal · Run · Fry · Earn ·</span></div>
+    </div>
+
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot-live"></span> Now on Roblox</p>
+        <h1 class="logo" aria-label="Steal a Nugget">
+          <span class="logo-small" aria-hidden="true">
+            <span style="--i:0">S</span><span style="--i:1">t</span><span style="--i:2">e</span><span style="--i:3">a</span><span style="--i:4">l</span><span class="sp"></span><span style="--i:5">a</span>
+          </span>
+          <span class="logo-big" aria-hidden="true">
+            <span style="--i:6">N</span><span style="--i:7">u</span><span style="--i:8">g</span><span style="--i:9">g</span><span style="--i:10">e</span><span style="--i:11">t</span>
+          </span>
+          <svg class="squiggle" viewBox="0 0 400 34" preserveAspectRatio="none" aria-hidden="true"><path d="M6 20 C 40 4, 70 32, 110 18 S 180 4, 220 18 S 300 32, 340 16 S 380 8, 394 18"/></svg>
+        </h1>
+        <p class="hero-lede">Grab raw nuggets off the counters along the lane, right under the noses of the <b>RFC</b>, <b>R</b> and <b>Nugget King</b> workers. Outrun them, drop your loot in the fryer and find out what you really stole.</p>
+        <div class="hero-cta">
+          <a class="btn btn-play btn-lg magnetic" href="https://www.roblox.com/games/130647941553612/Steal-a-Nugget" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></svg>
+            Play on Roblox
+          </a>
+          <a class="btn btn-ghost btn-lg" href="#fryer">Try the fryer</a>
+        </div>
+        <dl class="hero-stats">
+          <div><dt>Biomes</dt><dd data-count="30">30</dd></div>
+          <div><dt>Rarities</dt><dd data-count="9">9</dd></div>
+          <div><dt>Mutations</dt><dd data-count="8">8</dd></div>
+          <div><dt>Bosses</dt><dd data-count="2">2</dd></div>
+          <div><dt>Boss swap</dt><dd data-count="4" data-suffix="h">4h</dd></div>
+        </dl>
+      </div>
+
+      <div class="hero-visual is-prism" id="heroVisual" style="--hv:#ff7af5">
+        <div class="rays" aria-hidden="true"></div>
+        <div class="halo" aria-hidden="true"></div>
+        <div class="pedestal" id="pedestal" aria-hidden="true"><span></span></div>
+        <img class="nugget-fallback" src="prismatic.webp" alt="Prismatic nugget">
+        <canvas class="nugget3d" id="nugget3d" aria-label="3D nugget. Click to switch rarity, drag to spin." role="img"></canvas>
+        <div class="hv-label" id="hvLabel">
+          <span class="hv-tier" id="hvTier">Tier 9 / 9</span>
+          <b id="hvName">Prismatic</b>
+        </div>
+        <p class="hv-hint">Drag to spin · Tap to re-roll</p>
+      </div>
+    </div>
+
+    <div class="tapes" aria-hidden="true">
+      <div class="tape tape-b">
+        <div class="tape-track rev">
+          <span>Staff only</span><i></i><span>No nugget leaves the counter</span><i></i><span>Staff only</span><i></i><span>No nugget leaves the counter</span><i></i>
+          <span>Staff only</span><i></i><span>No nugget leaves the counter</span><i></i><span>Staff only</span><i></i><span>No nugget leaves the counter</span><i></i>
+        </div>
+      </div>
+      <div class="tape tape-a">
+        <div class="tape-track">
+          <span>Lava Rain incoming</span><i></i><span>Nugget King staff on the lane</span><i></i><span>Fryer oil at 180 °C</span><i></i><span>Someone just pulled Prismatic</span><i></i><span>Lava Dragon wakes soon</span><i></i>
+          <span>Lava Rain incoming</span><i></i><span>Nugget King staff on the lane</span><i></i><span>Fryer oil at 180 °C</span><i></i><span>Someone just pulled Prismatic</span><i></i><span>Lava Dragon wakes soon</span><i></i>
+        </div>
+        <div class="drips">
+          <span style="--x:7%;--w:16px;--h:34px;--d:3.2s"></span>
+          <span style="--x:19%;--w:11px;--h:22px;--d:2.6s"></span>
+          <span style="--x:33%;--w:20px;--h:46px;--d:3.8s"></span>
+          <span style="--x:52%;--w:12px;--h:26px;--d:2.9s"></span>
+          <span style="--x:64%;--w:18px;--h:40px;--d:3.4s"></span>
+          <span style="--x:81%;--w:10px;--h:20px;--d:2.4s"></span>
+          <span style="--x:92%;--w:15px;--h:32px;--d:3.1s"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW TO PLAY ============ -->
+  <section class="section how" id="how">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">The heist</p>
+        <h2 class="h2 split">Four steps from <em>raw</em> to <em>rich</em></h2>
+        <p class="sec-lede">Every run follows the same loop. The faster you get, the further you get through all 30 biomes.</p>
+      </header>
+
+      <div class="route">
+        <svg class="route-line" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M20 60 C 180 0, 300 120, 500 60 S 820 0, 980 60" fill="none"/>
+        </svg>
+        <div class="route-runner" aria-hidden="true"><img src="logo.webp" alt=""></div>
+
+        <ol class="steps">
+          <li class="step reveal" style="--sc:var(--ketchup)">
+            <span class="step-n">1</span>
+            <div class="step-ico" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><path d="M22 34V18a4 4 0 0 1 8 0v12m0-4v-10a4 4 0 0 1 8 0v14m0-8a4 4 0 0 1 8 0v12c0 9-7 16-16 16h-2c-7 0-12-4-15-10l-4-8a4 4 0 0 1 7-4l4 6" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Steal</h3>
+            <p>Run down the lane and grab a raw nugget off one of the counters.</p>
+            <ul class="signs">
+              <li class="sign sign-rfc">RFC</li>
+              <li class="sign sign-r">R</li>
+              <li class="sign sign-nk">Nugget King</li>
+            </ul>
+          </li>
+          <li class="step reveal" style="--sc:var(--mustard)">
+            <span class="step-n">2</span>
+            <div class="step-ico" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><circle cx="40" cy="12" r="6" fill="currentColor"/><path d="M26 22l12 2 6 10 10 2M38 24l-6 14 10 8-4 12M32 38l-8 6-12-2M6 26h10M2 34h10M8 42h8" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Run</h3>
+            <p>The staff chase you to take it back, and the nugget slows you down. The rarer it is, the slower you run. Reach the safe zone.</p>
+            <div class="chase" aria-hidden="true">
+              <img src="logo.webp" alt="">
+              <span class="chaser"></span><span class="chaser"></span><span class="chaser"></span>
+              <span class="safe">SAFE</span>
+            </div>
+          </li>
+          <li class="step reveal" style="--sc:#ff8a2a">
+            <span class="step-n">3</span>
+            <div class="step-ico" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><path d="M8 30h48v14c0 7-6 12-13 12H21C14 56 8 51 8 44ZM56 34h6M20 22c-3-4 3-6 0-10M32 22c-3-4 3-6 0-10M44 22c-3-4 3-6 0-10" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Fry</h3>
+            <p>Drop it in the fryer. The oil decides which rarity you walked out with.</p>
+            <div class="mini-roll" aria-hidden="true">
+              <div class="mr-track">
+                <img src="common.webp" alt=""><img src="rare.webp" alt=""><img src="epic.webp" alt=""><img src="legendary.webp" alt=""><img src="mythic.webp" alt=""><img src="prismatic.webp" alt=""><img src="common.webp" alt="">
+              </div>
+            </div>
+          </li>
+          <li class="step reveal" style="--sc:#66e05a">
+            <span class="step-n">4</span>
+            <div class="step-ico" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="4.5"/><path d="M40 24c-2-3-5-4-8-4-5 0-8 3-8 6 0 8 16 4 16 12 0 3-3 6-8 6-4 0-7-2-8-4M32 16v4m0 24v4" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Earn</h3>
+            <p>Give it to the NPC on your plot. Higher rarity means more money every second.</p>
+            <div class="cash" aria-hidden="true"><span class="cash-n" id="cashTick">$0</span><span class="cash-u">/s</span></div>
+          </li>
+        </ol>
+      </div>
+      <div class="guide-cta">
+        <p>Want every detail? Rarities, Rains, speed, pets, bosses and tips, all in one place.</p>
+        <a class="btn btn-play btn-lg magnetic" href="guide.html">Read the full guide
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FRYER ============ -->
+  <section class="section fryer-sec" id="fryer">
+    <div class="wrap fryer-grid">
+      <header class="sec-head sec-head-left">
+        <p class="eyebrow">Safe zone</p>
+        <h2 class="h2 split">Drop it in the <em>fryer</em></h2>
+        <p class="sec-lede">You never know what you stole until it comes out golden. Felt extra slow on the way back? That's usually a good sign. Try a few pulls with the demo fryer.</p>
+
+        <div class="fryer" id="fryerBox">
+          <div class="fryer-top">
+            <span class="temp"><span class="temp-dot"></span><span id="oilTemp">180</span> °C</span>
+            <span class="fryer-label">Deep fryer 01</span>
+          </div>
+          <div class="vat">
+            <div class="steam" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <div class="basket" id="basket"><img src="logo.webp" alt=""></div>
+            <div class="oil">
+              <span class="bub" style="--x:12%;--d:1.6s;--s:10px"></span>
+              <span class="bub" style="--x:28%;--d:2.1s;--s:7px"></span>
+              <span class="bub" style="--x:45%;--d:1.3s;--s:12px"></span>
+              <span class="bub" style="--x:61%;--d:1.9s;--s:8px"></span>
+              <span class="bub" style="--x:76%;--d:1.5s;--s:11px"></span>
+              <span class="bub" style="--x:88%;--d:2.4s;--s:6px"></span>
+            </div>
+          </div>
+          <div class="fryer-actions">
+            <button class="btn btn-fry" id="fryBtn" type="button">Fry a nugget</button>
+            <dl class="fry-stats">
+              <div><dt>Pulls</dt><dd id="pullCount">0</dd></div>
+              <div><dt>Best</dt><dd id="bestPull">–</dd></div>
+            </dl>
+          </div>
+        </div>
+      </header>
+
+      <div class="reveal-side">
+        <div class="result" id="result" data-rarity="none">
+          <div class="result-rays" aria-hidden="true"></div>
+          <div class="result-card" id="resultCard">
+            <div class="rc-face rc-front">
+              <div class="rc-q">?</div>
+              <p>Your nugget appears here</p>
+            </div>
+            <div class="rc-face rc-back">
+              <div class="rc-img"><img id="resultImg" src="common.webp" alt=""></div>
+              <p class="rc-mut" id="resultMut" hidden></p>
+              <h3 class="rc-name" id="resultName">Common</h3>
+              <p class="rc-tier"><span id="resultTier">Tier 1 / 9</span><span class="stars" id="resultStars"></span></p>
+            </div>
+          </div>
+          <div class="burst" id="burst" aria-hidden="true"></div>
+        </div>
+        <div class="history" aria-label="Recent pulls">
+          <p class="mini-label">Recent pulls</p>
+          <ul id="history"><li class="empty">None yet</li></ul>
+        </div>
+        <div class="odds">
+          <p class="mini-label">Demo odds <span>(placeholder values, not final)</span></p>
+          <div class="odds-bar" id="oddsBar"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RARITIES ============ -->
+  <section class="section rarities" id="rarities">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Nugget index</p>
+        <h2 class="h2 split">Nine rarities, one <em>fryer</em></h2>
+        <p class="sec-lede">From the plain golden Common to the rainbow Prismatic. The higher the tier, the shinier the card and the more your plot NPC pays out per second.</p>
+      </header>
+      <ul class="r-grid" id="rGrid">
+        <li class="hcard" style="--rc:var(--r-common);--t:1"><div class="hc"><div class="hc-top"><span class="hc-tier">T1</span><span class="hc-gems"></span></div><div class="hc-art"><img src="common.webp" alt="Common nugget" loading="lazy"></div><h3>Common</h3><div class="hc-foot"><span>Income</span><span class="r-bar"><i style="--w:11%"></i></span></div><span class="hc-glare"></span></div></li>
+        <li class="hcard" style="--rc:var(--r-uncommon);--t:2"><div class="hc"><div class="hc-top"><span class="hc-tier">T2</span><span class="hc-gems"></span></div><div class="hc-art"><img src="uncommon.webp" alt="Uncommon nugget" loading="lazy"></div><h3>Uncommon</h3><div class="hc-foot"><span>Income</span><span class="r-bar"><i style="--w:22%"></i></span></div><span class="hc-glare"></span></div></li>
+        <li class="hcard" style="--rc:var(--r-rare);--t:3"><div class="hc"><div class="hc-top"><span class="hc-tier">T3</span><span class="hc-gems"></span></div><div class="hc-art"><img src="rare.webp" alt="Rare nugget" loading="lazy"></div><h3>Rare</h3><div class="hc-foot"><span>Income</span><span class="r-bar"><i style="--w:33%"></i></span></div><span class="hc-glare"></span></div></li>
+        <li class="hcard" style="--rc:var(--r-srare);--t:4"><div class="hc"><div class="hc-top"><span class="hc-tier">T4</span><span class="hc-gems"></span></div><div class="hc-art"><img src="super_rare.webp" alt="Super Rare nugget" loading="lazy"></div><h3>Super Rare</h3><div class="hc-foot"><span>Income</span><span class="r-bar"><i style="--w:44%"></i></span></div><span class="hc-glare"></span></div></li>
+        <li class="hcard" style="--rc:var(--r-epic);--t:5"><div class="hc"><div class="hc-top"><span class="hc-tier">T5</span><span class="hc-gems"></span></div><div class="hc-art"><img src="epic.webp" alt="Epic nugget" loading="lazy"></div><h3>Epic</h3><div class="hc-foot"><span>Income</span><span class="r-bar"><i style="--w:55%"></i></span></div><span class="hc-glare"></span></div></li>
+        <li class="hcard sparkle" style="--rc:var(--r-legendary);--t:6"><div class="hc"><div class="hc-top"><span class="hc-tier">T6</span><span class="hc-gems"></span></div><div class="hc-art"><img src="legendary.webp" alt="Legendary nugget" loading="lazy"></div><h3>Legendary</h3><div class="hc-foot"><span>Income</span><span class="r-bar"><i style="--w:66%"></i></span></div><span class="hc-glare"></span></div></li>
+        <li class="hcard sparkle glow" style="--rc:var(--r-mythic);--t:7"><div class="hc"><div class="hc-top"><span class="hc-tier">T7</span><span class="hc-gems"></span></div><div class="hc-art"><img src="mythic.webp" alt="Mythic nugget" loading="lazy"></div><h3>Mythic</h3><div class="hc-foot"><span>Income</span><span class="r-bar"><i style="--w:77%"></i></span></div><span class="hc-glare"></span></div></li>
+        <li class="hcard sparkle glow pulse" style="--rc:var(--r-smythic);--t:8"><div class="hc"><div class="hc-top"><span class="hc-tier">T8</span><span class="hc-gems"></span></div><div class="hc-art"><img src="super_mythic.webp" alt="Super Mythic nugget" loading="lazy"></div><h3>Super Mythic</h3><div class="hc-foot"><span>Income</span><span class="r-bar"><i style="--w:88%"></i></span></div><span class="hc-glare"></span></div></li>
+        <li class="hcard sparkle prism" style="--rc:var(--r-prismatic);--t:9"><div class="hc"><div class="hc-top"><span class="hc-tier">T9</span><span class="hc-gems"></span></div><div class="hc-art"><img src="prismatic.webp" alt="Prismatic nugget" loading="lazy"></div><h3>Prismatic</h3><div class="hc-foot"><span>Income</span><span class="r-bar"><i style="--w:100%"></i></span></div><span class="hc-foil"></span><span class="hc-glare"></span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ RAINS / MUTATIONS ============ -->
+  <section class="section rains" id="rains" data-rain="lava">
+    <canvas class="rain-canvas" id="rainCanvas" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Weather report</p>
+        <h2 class="h2 split">When it <em>rains</em>, nuggets mutate</h2>
+        <p class="sec-lede">A Rain hits one biome at a time. Any nugget caught in it can come out with a mutation on top of its rarity.</p>
+      </header>
+
+      <div class="rain-tabs" role="tablist" aria-label="Mutations" id="rainTabs">
+        <button role="tab" type="button" data-rain="electric" style="--mc:var(--m-electric)">Electric</button>
+        <button role="tab" type="button" data-rain="candy" style="--mc:var(--m-candy)">Candy</button>
+        <button role="tab" type="button" data-rain="frost" style="--mc:var(--m-frost)">Frost</button>
+        <button role="tab" type="button" data-rain="toxic" style="--mc:var(--m-toxic)">Toxic</button>
+        <button role="tab" type="button" data-rain="lava" aria-selected="true" style="--mc:var(--m-lava)">Lava</button>
+        <button role="tab" type="button" data-rain="chrome" style="--mc:var(--m-chrome)">Chrome</button>
+        <button role="tab" type="button" data-rain="void" style="--mc:var(--m-void)">Void</button>
+        <button role="tab" type="button" data-rain="cosmic" style="--mc:var(--m-cosmic)">Cosmic</button>
+      </div>
+
+      <div class="rain-stage" role="tabpanel" id="rainPanel">
+        <div class="rain-art">
+          <div class="rain-ring" aria-hidden="true"></div>
+          <div class="mut-card" id="mutCard">
+            <div class="mc-in"><img id="rainImg" src="lava.webp" alt="Lava mutation nugget"><span class="mc-glare"></span></div>
+          </div>
+          <svg class="bolt" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 4 26 54h20l-8 42 36-56H52Z"/></svg>
+        </div>
+        <div class="rain-info">
+          <p class="rain-forecast"><span class="rf-dot"></span> Forecast: <b id="rainTitle">Lava Rain</b></p>
+          <h3 class="rain-name" id="rainName">Lava Mutation</h3>
+          <p class="rain-desc" id="rainDesc">Molten drops fall from a red sky. Nuggets come out cracked and glowing like they never stopped cooking.</p>
+          <ul class="rain-facts">
+            <li><span>Where</span><b>One biome per Rain</b></li>
+            <li><span>Stacks with</span><b>Any rarity</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SPEED / TREADMILL ============ -->
+  <section class="section speed" id="speed">
+    <div class="wrap speed-grid">
+      <header class="sec-head sec-head-left">
+        <p class="eyebrow">Plot gym</p>
+        <h2 class="h2 split">Too slow? Hit the <em>treadmill</em></h2>
+        <p class="sec-lede">The lane runs through 30 biomes, and every biome has its own worker speed. If you're not faster than its workers, they catch you before you make it back to the safe zone. And a nugget in your hands slows you down, more the rarer it is. Train on the treadmill in front of your plot for speed to spare.</p>
+        <div class="speed-ctrl">
+          <button class="btn btn-fry" id="trainBtn" type="button">Hold to run</button>
+          <button class="btn btn-ghost btn-sm" id="trainReset" type="button">Reset</button>
+        </div>
+        <p class="mini-label">Demo values. Plug in your real speed gates.</p>
+      </header>
+
+      <div class="gym">
+        <div class="gauge">
+          <svg viewBox="0 0 220 130" aria-hidden="true">
+            <path class="g-track" d="M20 115 A90 90 0 0 1 200 115" />
+            <path class="g-fill" id="gaugeFill" d="M20 115 A90 90 0 0 1 200 115" />
+            <g class="g-ticks">
+              <line x1="20" y1="115" x2="34" y2="115"/><line x1="46.4" y1="51.4" x2="56.3" y2="61.3"/><line x1="110" y1="25" x2="110" y2="39"/><line x1="173.6" y1="51.4" x2="163.7" y2="61.3"/><line x1="200" y1="115" x2="186" y2="115"/>
+            </g>
+            <g class="g-needle" id="needle"><line x1="110" y1="115" x2="110" y2="40"/><circle cx="110" cy="115" r="8"/></g>
+          </svg>
+          <div class="g-read"><span id="speedVal">16</span><small>speed</small></div>
+        </div>
+        <div class="treadmill" id="treadmill">
+          <div class="runner" aria-hidden="true">
+            <span class="rb-head"></span><span class="rb-body"></span><span class="rb-leg l"></span><span class="rb-leg r"></span>
+          </div>
+          <div class="belt"></div>
+        </div>
+        <ol class="gates" id="gates">
+          <li data-min="16"><span class="g-lock"></span><b>Biome 1</b><small>16+</small></li>
+          <li data-min="40"><span class="g-lock"></span><b>Biome 2</b><small>40+</small></li>
+          <li data-min="70"><span class="g-lock"></span><b>Biome 3</b><small>70+</small></li>
+          <li data-min="100"><span class="g-lock"></span><b>… Biome 30</b><small>100+</small></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PETS ============ -->
+  <section class="section pets" id="pets">
+    <div class="wrap pets-grid">
+      <div class="fuse" id="fuse">
+        <div class="fuse-machine">
+          <div class="fm-top"><span class="fm-light"></span><span class="fm-light"></span><span class="fm-light"></span></div>
+          <div class="fm-window">
+            <div class="fm-swirl" aria-hidden="true"></div>
+            <div class="pet p-a"><span class="eye"></span><span class="eye"></span><span class="blush"></span></div>
+            <div class="pet p-b"><span class="eye"></span><span class="eye"></span><span class="blush"></span></div>
+            <div class="pet p-out"><span class="crown"></span><span class="eye"></span><span class="eye"></span><span class="blush"></span></div>
+            <div class="fm-flash"></div>
+          </div>
+          <div class="fm-base">FUSE-O-MATIC</div>
+        </div>
+        <div class="fuse-labels">
+          <span class="chip">Pet ×2</span>
+          <svg viewBox="0 0 40 16" width="40" height="16" aria-hidden="true"><path d="M2 8h32m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="chip chip-hot">Stronger pet</span>
+        </div>
+      </div>
+
+      <header class="sec-head sec-head-left">
+        <p class="eyebrow">Sidekicks</p>
+        <h2 class="h2 split">Pets that <em>pay</em></h2>
+        <p class="sec-lede">Buy pets from the Egg Spinner. Each one boosts your run. Got two of the same? Throw them in the Fuse Machine and get a better one back.</p>
+        <ul class="boosts">
+          <li><b>Egg Spinner</b><span>where pets come from</span></li>
+          <li><b>+10%</b><span>income</span></li>
+          <li><b>+Speed</b><span>outrun staff</span></li>
+          <li><b>Fuse</b><span>2 same pets → 1 better pet</span></li>
+        </ul>
+        <button class="btn btn-fry" id="fuseBtn" type="button">Fuse them</button>
+      </header>
+    </div>
+  </section>
+
+  <!-- ============ BOSSES ============ -->
+  <section class="section bosses" id="bosses">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Boss rotation</p>
+        <h2 class="h2 split">Two bosses. <em>Every 4 hours</em> they swap.</h2>
+        <p class="sec-lede">Fight solo or bring the whole server. Take the boss down and walk away with a nugget you can't fry anywhere else. Go on, click one.</p>
+        <div class="boss-clock">
+          <span>Next swap in</span>
+          <b id="bossTimer">--:--:--</b>
+        </div>
+      </header>
+
+      <div class="boss-grid">
+        <article class="boss boss-king" id="bossKing" data-hp="1500">
+          <div class="boss-bg" aria-hidden="true"></div>
+          <div class="boss-top"><span class="boss-state">Up next</span><span class="boss-n">Boss 1</span></div>
+          <h3 class="boss-name">Nugget King</h3>
+          <div class="hp" aria-hidden="true">
+            <div class="hp-bar"><i class="hp-lag"></i><i class="hp-fill"></i></div>
+            <span class="hp-txt"><b class="hp-n">1,500</b> / 1,500 HP</span>
+          </div>
+          <button class="boss-art" type="button" aria-label="Attack the Nugget King"><img src="king.webp" alt=""></button>
+          <div class="boss-win" hidden>
+            <span class="stamp">Defeated</span>
+            <img src="king.webp" alt="King Nugget">
+            <p>+1 <b>King Nugget</b></p>
+            <button class="btn btn-play btn-sm boss-again" type="button">Fight again</button>
+          </div>
+          <p class="boss-reward"><span>Reward</span><b>King Nugget</b></p>
+        </article>
+
+        <div class="vs" aria-hidden="true">VS</div>
+
+        <article class="boss boss-dragon" id="bossDragon" data-hp="1800">
+          <canvas class="ember-canvas" id="emberCanvas" aria-hidden="true"></canvas>
+          <div class="boss-bg" aria-hidden="true"></div>
+          <div class="boss-top"><span class="boss-state">Up next</span><span class="boss-n">Boss 2</span></div>
+          <h3 class="boss-name">Lava Dragon</h3>
+          <div class="hp" aria-hidden="true">
+            <div class="hp-bar"><i class="hp-lag"></i><i class="hp-fill"></i></div>
+            <span class="hp-txt"><b class="hp-n">1,800</b> / 1,800 HP</span>
+          </div>
+          <button class="boss-art" type="button" aria-label="Attack the Lava Dragon"><img src="dragon.webp" alt=""></button>
+          <div class="boss-win" hidden>
+            <span class="stamp">Defeated</span>
+            <img src="dragon.webp" alt="Dragon Nugget">
+            <p>+1 <b>Dragon Nugget</b></p>
+            <button class="btn btn-play btn-sm boss-again" type="button">Fight again</button>
+          </div>
+          <p class="boss-reward"><span>Reward</span><b>Dragon Nugget</b></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="final">
+    <div class="drip-top" aria-hidden="true">
+      <div class="drips drips-ketchup">
+        <span style="--x:5%;--w:18px;--h:40px;--d:3.4s"></span>
+        <span style="--x:17%;--w:12px;--h:24px;--d:2.7s"></span>
+        <span style="--x:30%;--w:22px;--h:56px;--d:4s"></span>
+        <span style="--x:46%;--w:14px;--h:30px;--d:3s"></span>
+        <span style="--x:59%;--w:20px;--h:48px;--d:3.6s"></span>
+        <span style="--x:74%;--w:11px;--h:22px;--d:2.5s"></span>
+        <span style="--x:88%;--w:17px;--h:38px;--d:3.3s"></span>
+      </div>
+    </div>
+    <div class="final-rays" aria-hidden="true"></div>
+    <div class="wrap final-inner">
+      <div class="final-nuggets" aria-hidden="true">
+        <img src="common.webp" alt="" style="--r:-14deg;--d:0s">
+        <img src="legendary.webp" alt="" style="--r:8deg;--d:.4s">
+        <img src="prismatic.webp" alt="" style="--r:-4deg;--d:.8s">
+      </div>
+      <h2 class="h2 final-h split">The fryer is hot.<br>The staff are <em>distracted</em>.</h2>
+      <a class="btn btn-play btn-xl magnetic" href="https://www.roblox.com/games/130647941553612/Steal-a-Nugget" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></svg>
+        Play Steal a Nugget
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <span class="brand brand-sm"><img src="logo.webp" alt="" width="34" height="34"><span>Steal a <b>Nugget</b></span></span>
+    <p>A Roblox experience. Not affiliated with Roblox Corporation.</p>
+    <span class="foot-links"><a href="guide.html">Guide</a><a href="#top">Back to top</a></span>
+  </div>
+  <div class="wrap copyright">
+    <p>&copy; <span id="year">2026</span> <b>shadowpulse04</b>. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
