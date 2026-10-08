@@ -264,7 +264,7 @@
     const ctx = cv.getContext("2d");
     let w, h, parts = [];
     function size() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, canHover ? 2 : 1.5);
       w = cv.clientWidth; h = cv.clientHeight;
       cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
@@ -316,7 +316,7 @@
     try {
       renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, powerPreference: "high-performance" });
     } catch (e) { return; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, canHover ? 2 : 1.5));
     renderer.outputEncoding = T.sRGBEncoding;
     renderer.toneMapping = T.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
@@ -562,6 +562,26 @@
     else setInterval(() => { v += Math.round(rand(3, 17)); cash.textContent = "$" + v.toLocaleString("en-US"); }, 450);
   }
 
+  /* ---------- steps swipe row (phones): dots follow the scroll ---------- */
+  (function stepDots() {
+    const row = $(".steps"), dots = $$("#stepDots button");
+    if (!row || !dots.length) return;
+    const steps = $$(".step", row);
+    let raf = 0;
+    const sync = () => {
+      raf = 0;
+      const mid = row.scrollLeft + row.clientWidth / 2;
+      let best = 0, bestD = Infinity;
+      steps.forEach((s, i) => { const d = Math.abs(s.offsetLeft + s.offsetWidth / 2 - mid); if (d < bestD) { bestD = d; best = i; } });
+      dots.forEach((d, i) => d.classList.toggle("on", i === best));
+    };
+    row.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(sync); }, { passive: true });
+    dots.forEach((d, i) => d.addEventListener("click", () => {
+      const s = steps[i];
+      row.scrollTo({ left: s.offsetLeft - (row.clientWidth - s.offsetWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" });
+    }));
+  })();
+
   /* =========================================================
      FRYER
      ========================================================= */
@@ -633,6 +653,11 @@
   }
 
   fryBtn?.addEventListener("click", () => {
+    // on phones the result card sits below the fryer: bring it into view
+    const rr = result.getBoundingClientRect();
+    if (rr.top < 70 || rr.bottom > window.innerHeight) {
+      result.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+    }
     fryBtn.disabled = true;
     fryBtn.textContent = "Frying…";
     fryer.classList.add("frying");
@@ -713,6 +738,10 @@
       b.tabIndex = on ? 0 : -1;
       if (on && focus) b.focus();
     });
+    const tabRow = $("#rainTabs"), sel = $(`#rainTabs [data-rain="${key}"]`);
+    if (tabRow && sel && tabRow.scrollWidth > tabRow.clientWidth + 2) {
+      tabRow.scrollTo({ left: sel.offsetLeft - (tabRow.clientWidth - sel.offsetWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" });
+    }
     const token = ++rainToken;
     const pre = mutImages[key];
     const ready = pre.complete && pre.naturalWidth ? Promise.resolve()
@@ -744,7 +773,7 @@
 
   let rctx, rw, rh, drops = [], flashA = 0, rainVisible = false;
   function sizeRain() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, canHover ? 2 : 1.5);
     rw = rainCv.clientWidth; rh = rainCv.clientHeight;
     rainCv.width = rw * dpr; rainCv.height = rh * dpr; rctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
@@ -987,6 +1016,110 @@
       }
       requestAnimationFrame(loop);
     })();
+  })();
+
+  /* =========================================================
+     HOW TO PLAY: the Heist Handbook
+     All chapters are stacked; you just scroll. The receipt (desktop)
+     and the chip row (phones/tablets) follow along: the current
+     chapter is highlighted, chapters you passed are struck through.
+     ========================================================= */
+  (function handbook() {
+    const chapters = $$("#hbPanels > .chapter");
+    if (!chapters.length) return;
+    const recLinks = $$("#toc .rc-tab"), chips = $$(".toc-chips .chip-tab");
+    const chipTrack = $(".toc-chips-track"), readPct = $("#readPct"), readBar = $("#readBar");
+    let last = -2, ticking = false;
+    function update() {
+      ticking = false;
+      const line = window.innerHeight * .4;
+      let idx = -1;
+      chapters.forEach((c, i) => { if (c.getBoundingClientRect().top < line) idx = i; });
+      // reading progress through the handbook
+      const first = chapters[0].getBoundingClientRect().top;
+      const end = chapters[chapters.length - 1].getBoundingClientRect().bottom - window.innerHeight * .6;
+      const rp = Math.min(1, Math.max(0, (line - first) / Math.max(1, end + line - first)));
+      readPct.textContent = Math.round(rp * 100) + "%";
+      readBar.style.transform = `scaleX(${rp})`;
+      if (idx === last) return;
+      last = idx;
+      [recLinks, chips].forEach(list => list.forEach((a, i) => {
+        a.classList.toggle("active", i === idx);
+        a.classList.toggle("done", i < idx);
+        if (i === idx) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+      }));
+      const chip = chips[idx];
+      if (chip && chipTrack && chipTrack.offsetParent) {
+        chipTrack.scrollTo({ left: chip.offsetLeft - (chipTrack.clientWidth - chip.offsetWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" });
+      }
+    }
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+  })();
+
+  /* ---------- run a callback only while an element is on screen ---------- */
+  function whileVisible(el, fn) {
+    if (!el) return;
+    let on = false, raf = 0, t0 = 0;
+    const loop = now => { if (!on) return; fn((now - t0) / 1000); raf = requestAnimationFrame(loop); };
+    new IntersectionObserver(([e]) => {
+      on = e.isIntersecting;
+      if (on) { t0 = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); }
+    }).observe(el);
+  }
+
+  /* ---------- handbook: plot income counter ---------- */
+  const plotCash = $("#plotCash");
+  if (plotCash) {
+    if (reduceMotion) plotCash.textContent = "$2,400";
+    else {
+      let sum = 0, last = 0;
+      whileVisible($(".plot-demo"), t => {
+        if (t - last < .12) return;
+        last = t; sum += 7 + Math.round(Math.random() * 9);
+        plotCash.textContent = "$" + sum.toLocaleString("en-US");
+      });
+    }
+  }
+
+  /* ---------- handbook: speed gate track ---------- */
+  const gateTrack = $(".gate-track");
+  if (gateTrack) {
+    const gts = $$("li", gateTrack), marks = [.12, .38, .64, .9];
+    const setP = p => {
+      gateTrack.style.setProperty("--p", p.toFixed(3));
+      gts.forEach((g, i) => g.classList.toggle("open", p >= marks[i]));
+    };
+    if (reduceMotion) setP(1);
+    else whileVisible(gateTrack, t => { const c = t % 6.5; setP(c < 5 ? c / 5 : 1); });
+  }
+
+  /* ---------- handbook: upcoming boss rotation (same rule as the timer) ---------- */
+  (function bossSchedule() {
+    const body = $("#schedBody");
+    const cards = [$("#gbKing"), $("#gbDragon")];
+    const B = [
+      { name: "Nugget King", reward: "King Nugget", color: "var(--mustard)" },
+      { name: "Lava Dragon", reward: "Dragon Nugget", color: "var(--m-lava)" },
+    ];
+    function render() {
+      const now = Date.now() - ANCHOR_UTC_HOUR * 3600 * 1000;
+      const idx = Math.floor(now / BLOCK);
+      cards.forEach((c, i) => c && c.classList.toggle("live", idx % 2 === i));
+      if (!body) return;
+      const fmt = new Intl.DateTimeFormat(undefined, { weekday: "short", hour: "2-digit", minute: "2-digit" });
+      const rows = [];
+      for (let k = 0; k < 7; k++) {
+        const block = idx + k, b = B[block % 2];
+        const start = new Date(block * BLOCK + ANCHOR_UTC_HOUR * 3600 * 1000);
+        rows.push(`<tr class="${k === 0 ? "now" : ""}" style="--bc:${b.color}"><td>${fmt.format(start)}${k === 0 ? '<span class="now-pill">Now</span>' : ""}</td><td><span class="boss-chip">${b.name}</span></td><td>${b.reward}</td></tr>`);
+      }
+      body.innerHTML = rows.join("");
+    }
+    render();
+    setInterval(render, 30 * 1000);
   })();
 
   /* ---------- copyright year ---------- */
