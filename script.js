@@ -239,7 +239,7 @@
       x = e.clientX; y = e.clientY;
       dot.style.transform = `translate(${x}px, ${y}px)`;
       cur.classList.remove("off");
-      const hot = e.target.closest && e.target.closest("a, button, .hcard, .mut-card, .nugget3d, [role=tab]");
+      const hot = e.target.closest && e.target.closest("a, button, .hcard, .mut-card, .nugget3d, .pc-art, [role=tab]");
       cur.classList.toggle("hot", !!hot);
     }, { passive: true });
     window.addEventListener("pointerdown", () => cur.classList.add("down"));
@@ -1021,6 +1021,17 @@
     });
     $(".boss-again", b).addEventListener("click", () => { hp = max; render(); win.hidden = true; art.focus({ preventScroll: true }); });
     render();
+  });
+
+  /* ---------- PvP cards: tap to swing the spatula / spring the trap ---------- */
+  $$(".pvp-card").forEach(card => {
+    const art = $(".pc-art", card);
+    art?.addEventListener("click", () => {
+      card.classList.remove("fx"); void card.offsetWidth; card.classList.add("fx");
+      if (card.dataset.fx === "swipe") { Sound.swoosh(); setTimeout(() => Sound.pop(6), 140); }
+      else Sound.hit(true);
+      clearTimeout(card._fx); card._fx = setTimeout(() => card.classList.remove("fx"), 1100);
+    });
   });
 
   /* ---------- dragon embers ---------- */

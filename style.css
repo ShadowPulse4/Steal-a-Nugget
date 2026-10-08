@@ -1479,3 +1479,108 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 .lite .rain-ring { filter: blur(18px); }
 .lite .mut-card { animation: none; }
 .lite .boss.live .boss-art { animation: none; }
+
+/* =========================================================
+   PLAYER VS PLAYER: spatula + traps
+   ========================================================= */
+.pvp { background: radial-gradient(55% 45% at 85% 15%, rgba(255, 75, 43, .14), transparent 70%), var(--oil-2); }
+
+/* the lane split into a safe zone (no PvP) and the open lane (PvP on) */
+.pvp-zones {
+  position: relative; display: grid; grid-template-columns: minmax(104px, 26%) minmax(0, 1fr);
+  height: clamp(160px, 20vw, 210px); margin: 0 0 clamp(2rem, 4vw, 3rem);
+  border-radius: 24px; overflow: hidden; border: 1px solid var(--line); box-shadow: 10px 10px 0 #0b0603;
+}
+.pz-safe {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .55rem; text-align: center; padding: .5rem;
+  background: repeating-linear-gradient(135deg, rgba(102, 224, 90, .18) 0 14px, rgba(102, 224, 90, .08) 14px 28px), #13210f;
+  border-right: 4px dashed var(--lettuce);
+}
+.pz-safe b { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.05rem, .9rem + .6vw, 1.4rem); line-height: 1; color: var(--lettuce); }
+.pz-chip { padding: .22rem .6rem; border-radius: 999px; font-family: var(--f-mono); font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+.pz-off { background: var(--lettuce); color: var(--ink); }
+.pz-on { position: absolute; top: .8rem; right: .8rem; z-index: 3; background: var(--ketchup); color: #fff; box-shadow: 0 0 16px rgba(255, 75, 43, .5); }
+.pz-lane {
+  position: relative; overflow: hidden; container-type: inline-size;
+  background: linear-gradient(rgba(255, 75, 43, .07), rgba(255, 75, 43, .07)), repeating-conic-gradient(#3b2515 0 25%, #2b1a0e 0 50%) 0 0 / 60px 60px;
+}
+.pz-trap { position: absolute; left: 24%; bottom: 10%; width: clamp(70px, 9vw, 110px); filter: drop-shadow(0 6px 6px rgba(0, 0, 0, .55)); }
+.pz-trap2 { left: 74%; bottom: 52%; width: clamp(52px, 6.5vw, 80px); }
+.pz-runner { position: absolute; left: 0; bottom: 34%; z-index: 2; width: clamp(36px, 4vw, 48px); animation: pzRun 5s linear infinite; will-change: transform; }
+.pz-runner img { width: 100%; filter: drop-shadow(0 5px 6px rgba(0, 0, 0, .5)); animation: pzBob .35s ease-in-out infinite alternate; }
+.pz-spat {
+  position: absolute; left: 50%; top: 2%; z-index: 2; height: 72%; width: auto;
+  transform-origin: 50% 96%; animation: pzSwat 5s ease-in-out infinite; filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .5));
+}
+@keyframes pzRun { from { transform: translateX(calc(100cqw + 12px)); } to { transform: translateX(-70px); } }
+@keyframes pzBob { to { transform: translateY(-6px) rotate(-8deg); } }
+@keyframes pzSwat { 0%, 38%, 62%, 100% { transform: rotate(30deg); } 47% { transform: rotate(-42deg); } 54% { transform: rotate(12deg); } }
+.pvp-zones-sm { height: 150px; margin: 1.4rem 0 1.8rem; }
+
+/* item cards */
+.pvp-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); }
+@media (max-width: 680px) { .pvp-cards { grid-template-columns: 1fr; } }
+.pvp-card {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); overflow: hidden;
+  border-radius: 26px; background: var(--crust); border: 2px solid color-mix(in srgb, var(--pc) 40%, transparent);
+  box-shadow: 10px 10px 0 #0b0603;
+}
+@media (max-width: 960px) { .pvp-card { grid-template-columns: 1fr; } }
+.pc-art {
+  position: relative; display: grid; place-items: center; min-height: 230px; padding: 1rem; border: 0; cursor: pointer; overflow: hidden;
+  background: radial-gradient(circle at 50% 58%, color-mix(in srgb, var(--pc) 32%, transparent), transparent 66%), #120a06;
+}
+.pc-img { filter: drop-shadow(0 12px 14px rgba(0, 0, 0, .55)); }
+.pc-spatula { height: 190px; width: auto; transform: rotate(20deg); transform-origin: 50% 92%; }
+.pc-trap { width: 86%; max-width: 270px; }
+.pc-nug { position: absolute; left: 20%; bottom: 16%; width: 54px; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, .5)); }
+.pc-pop {
+  position: absolute; top: 12%; left: 50%; translate: -50% 0; opacity: 0; pointer-events: none;
+  font-family: var(--f-display); font-size: 2.2rem; color: var(--pc); -webkit-text-stroke: .12em var(--ink); paint-order: stroke fill;
+}
+.pvp-card.fx .pc-spatula { animation: swat .6s var(--ease-out); }
+.pvp-card.fx .pc-nug { animation: yoink .9s ease-out .14s both; }
+.pvp-card.fx .pc-trap { animation: snapTrap .55s var(--ease-pop); }
+.pvp-card.fx .pc-pop { animation: popWord .95s var(--ease-pop); }
+@keyframes swat { 0% { transform: rotate(20deg); } 35% { transform: rotate(-58deg); } 70% { transform: rotate(10deg); } 100% { transform: rotate(20deg); } }
+@keyframes yoink { from { transform: none; opacity: 1; } to { transform: translate(170px, -150px) rotate(540deg) scale(.4); opacity: 0; } }
+@keyframes snapTrap { 20% { transform: scale(1.06, .72); } 45% { transform: scale(1.08) rotate(-3deg); } 70% { transform: rotate(2deg); } }
+@keyframes popWord { 0% { opacity: 0; transform: scale(.4) rotate(-12deg); } 30% { opacity: 1; transform: scale(1.15) rotate(-6deg); } 70% { opacity: 1; transform: scale(1) rotate(-6deg); } 100% { opacity: 0; transform: translateY(-22px) rotate(-6deg); } }
+@media (hover: hover) { .pvp-card:hover .pc-spatula { transform: rotate(8deg); transition: transform .3s var(--ease-pop); } }
+.pc-body { display: flex; flex-direction: column; gap: .4rem; padding: 1.4rem 1.4rem 1.3rem; min-width: 0; }
+.pc-kind { margin: 0; font-family: var(--f-mono); font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--pc); }
+.pc-body h3 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: var(--step-2); line-height: 1; color: var(--batter); }
+.pc-body > p:not(.pc-kind):not(.pc-rule) { margin: 0; color: var(--muted); line-height: 1.5; }
+.pc-rule {
+  display: flex; align-items: center; gap: .55rem; margin: auto 0 0; padding-top: .9rem; border-top: 1px dashed var(--line);
+  font-family: var(--f-mono); font-size: .76rem; font-weight: 700; color: var(--lettuce);
+}
+.pc-lock { position: relative; flex: none; width: 13px; height: 11px; margin-top: 6px; border-radius: 3px; background: var(--lettuce); }
+.pc-lock::before { content: ""; position: absolute; left: 2px; top: -7px; width: 5px; height: 7px; border: 2px solid var(--lettuce); border-bottom: 0; border-radius: 5px 5px 0 0; }
+.pvp-hint { margin: 1.2rem 0 0; text-align: center; font-family: var(--f-mono); font-size: .74rem; color: var(--muted); }
+
+/* handbook: item rows */
+.item-row { display: grid; grid-template-columns: 110px minmax(0, 1fr); align-items: center; gap: 1.2rem; margin: .4rem 0 1.4rem; padding: 1rem 1.2rem; border-radius: 18px; background: var(--crust); border: 1px solid var(--line); }
+.item-row p { margin: 0 !important; }
+.item-row img { justify-self: center; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .5)); }
+.ir-spatula { height: 116px; width: auto; transform: rotate(20deg); }
+.ir-trap { width: 110px; }
+@media (max-width: 420px) { .item-row { grid-template-columns: 76px minmax(0, 1fr); gap: .9rem; } .ir-spatula { height: 92px; } .ir-trap { width: 76px; } }
+
+/* =========================================================
+   BOSSES: the bosses themselves as the attack target
+   ========================================================= */
+.boss-art { position: relative; aspect-ratio: 16 / 10; }
+.boss-art img { width: 100%; height: 100%; object-fit: cover; }
+.boss-art-king {
+  background:
+    radial-gradient(55% 70% at 50% 64%, rgba(255, 199, 44, .45), transparent 70%),
+    repeating-conic-gradient(from 0deg at 50% 70%, rgba(255, 199, 44, .12) 0 8deg, transparent 8deg 18deg),
+    #2a1709;
+}
+.boss-art-king img { object-fit: contain; padding-top: 3%; filter: drop-shadow(0 14px 18px rgba(0, 0, 0, .55)); }
+.boss-art-dragon img { object-position: 40% 42%; }
+.boss-reward b { display: inline-flex; align-items: center; gap: .55rem; }
+.br-img { width: 46px; border-radius: 9px; box-shadow: 0 4px 10px rgba(0, 0, 0, .4); }
+.gb-king img { aspect-ratio: 1; object-fit: contain; padding: 6px; background: radial-gradient(circle at 50% 62%, rgba(255, 199, 44, .4), transparent 70%), #2a1709; }
+.gb-dragon img { aspect-ratio: 1; object-fit: cover; }
