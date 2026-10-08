@@ -286,16 +286,16 @@
       };
     }
     size();
-    parts = Array.from({ length: Math.round(Math.min(lite ? 26 : 70, w / 16)) }, () => make(true));
+    parts = Array.from({ length: Math.round(Math.min(lite ? 18 : 70, w / 16)) }, () => make(true));
     window.addEventListener("resize", size);
     let visible = true;
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(cv);
-    function draw() {
+    function draw(m) {
       ctx.clearRect(0, 0, w, h);
       for (const p of parts) {
-        p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+        p.x += p.vx * m; p.y += p.vy * m; p.rot += p.vr * m;
         if (p.bubble) {
-          p.x += Math.sin(p.y * .02) * .3;
+          p.x += Math.sin(p.y * .02) * .3 * m;
           ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
           ctx.strokeStyle = `rgba(${p.hue},${p.a})`; ctx.lineWidth = 1.5; ctx.stroke();
           ctx.beginPath(); ctx.arc(p.x - p.r * .35, p.y - p.r * .35, p.r * .25, 0, Math.PI * 2);
@@ -309,25 +309,41 @@
         if (p.y < -30 || p.y > h + 30) Object.assign(p, make(false));
       }
     }
-    function loop() { if (visible) draw(); requestAnimationFrame(loop); }
-    if (reduceMotion) draw(); else loop();
+    // phones: the slow bubbles move twice as far every other frame (looks the same, half the work)
+    let tick = 0;
+    function loop() {
+      requestAnimationFrame(loop);
+      if (!visible || (lite && (tick++ & 1))) return;
+      draw(lite ? 2 : 1);
+    }
+    if (reduceMotion) draw(1); else loop();
   })();
 
   /* =========================================================
      HERO: 3D low-poly nugget (three.js)
      ========================================================= */
-  (function hero3D() {
+  (function hero3DBoot() {
+    const wrap = $("#heroVisual");
+    if (!wrap || !$("#nugget3d") || !window.THREE) return;
+    // phones/tablets: hide the flat fallback while waiting, and build the 3D scene
+    // once the first paint is out, so it never competes with the page load
+    wrap.classList.add("wait-3d");
+    const go = () => { if (!hero3D()) wrap.classList.remove("wait-3d"); };
+    if (!lite) return go();
+    requestAnimationFrame(() => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(go, { timeout: 500 }) : go()), 60));
+  })();
+
+  function hero3D() {
     const wrap = $("#heroVisual"), cv = $("#nugget3d");
-    if (!wrap || !cv || !window.THREE) return;
     const T = window.THREE;
     let renderer;
     try {
       renderer = new T.WebGLRenderer({ canvas: cv, antialias: !lite, alpha: true, powerPreference: lite ? "default" : "high-performance" });
-    } catch (e) { return; }
+    } catch (e) { return false; }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lite ? 1.25 : 2));
     renderer.outputEncoding = T.sRGBEncoding;
     renderer.toneMapping = T.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = lite ? 1 : 1.15;
     renderer.setClearColor(0x000000, 0);
 
     const scene = new T.Scene();
@@ -336,7 +352,6 @@
     camera.lookAt(0, -.15, 0);
 
     // a tiny light studio baked into an environment map, so the facets sparkle
-    const pmrem = new T.PMREMGenerator(renderer);
     const env = new T.Scene();
     env.add(new T.Mesh(new T.SphereGeometry(20, 16, 8), new T.MeshBasicMaterial({ color: 0x1a0d06, side: T.BackSide })));
     const panel = (hex, k, pos, w, h) => {
@@ -348,7 +363,18 @@
     panel(0xff5a2b, 2.5, [7, -1, 1], 2.5, 5);
     panel(0x9cc4ff, 1.6, [0, -3, -7], 9, 2);
     panel(0xffffff, 6, [3, 3, 7], 1.6, 1.6);
-    scene.environment = pmrem.fromScene(env, .03).texture;
+    // desktop: full PMREM (blurred, physically based). phones: one tiny 32px cube
+    // snapshot instead, no blur passes and no heavy shader to compile
+    let envCube = null;
+    if (lite) {
+      const rt = new T.WebGLCubeRenderTarget(32);
+      new T.CubeCamera(.1, 50, rt).update(renderer, env);
+      envCube = rt.texture;
+    } else {
+      const pmrem = new T.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(env, .03).texture;
+      pmrem.dispose();
+    }
 
     // nugget geometry: a squircle blob, flattened, lumpy, with a notch
     const geo = (() => {
@@ -395,9 +421,9 @@
       colAttr.needsUpdate = true;
     }
 
-    // lite devices use the cheaper standard material (no clearcoat pass)
+    // phones/tablets: Phong + the tiny cube map. Same faceted sparkle, a fraction of the GPU work
     const mat = lite
-      ? new T.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, flatShading: true, roughness: .3, metalness: .1, envMapIntensity: 1.4 })
+      ? new T.MeshPhongMaterial({ color: 0xffffff, vertexColors: true, flatShading: true, shininess: 80, specular: 0x55422f, envMap: envCube, combine: T.AddOperation, reflectivity: .16 })
       : new T.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, flatShading: true, roughness: .3, metalness: .1, clearcoat: 1, clearcoatRoughness: .15, envMapIntensity: 1.3 });
     const group = new T.Group();
     group.add(new T.Mesh(geo, mat));
@@ -450,7 +476,8 @@
       prism = !!L.prism;
       targetCol.set(L.c).convertSRGBToLinear();
       targetEm.set(L.e).convertSRGBToLinear();
-      mat.roughness = L.r; mat.metalness = L.m; mat.clearcoat = L.cc;
+      if (lite) { mat.shininess = 20 + (1 - L.r) * 90; mat.reflectivity = L.r > .5 ? .05 : .14 + L.m * .2; }
+      else { mat.roughness = L.r; mat.metalness = L.m; mat.clearcoat = L.cc; }
       rim.color.set(L.rim);
       sparkles.forEach(s => s.material.color.set(prism ? "#ffffff" : L.rim));
       if (!prism) paint(false, 0);
@@ -476,7 +503,7 @@
       spinBoost = .45; flash = 1; sq = .28; sqV = 0;
       apply(curIdx);
       if (user) Sound.pop(curIdx);
-      if (!reduceMotion) {
+      if (!reduceMotion && (user || !lite)) {
         const r = cv.getBoundingClientRect();
         const c = RARITIES[curIdx].id === "prismatic" ? RAINBOW : [RARITIES[curIdx].color, "#fff0d4"];
         crumbs(r.left + r.width / 2, r.top + r.height * .45, c, 16, r.width * .4);
@@ -514,30 +541,50 @@
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(wrap);
     const clock = new T.Clock();
 
-    let lastDraw = 0, frameNo = 0;
+    // Phones run at full frame rate as long as they keep up. If the frame gaps stay
+    // long once things have settled, drop to a steady 30 fps instead of stuttering.
+    let lastDraw = 0, lastNow = 0, frameNo = 0, gapAvg = 16.7, half = false, warm = 0;
     function frame(now = 0) {
       requestAnimationFrame(frame);
-      if (!visible) { clock.getDelta(); return; }
-      if (lite && now - lastDraw < 31) return; // ~30 fps on phones and tablets
+      if (!visible || document.hidden) { clock.getDelta(); lastNow = 0; return; }
+      if (lite) {
+        if (lastNow && landed && t > 2.5) {
+          const gap = now - lastNow;
+          if (gap < 120) gapAvg += (gap - gapAvg) * .04;
+          if (!half && gapAvg > 26) half = true;
+        }
+        lastNow = now;
+        if (half && now - lastDraw < 31) return;
+      }
       lastDraw = now;
+      // first frames only upload buffers and compile; the drop starts after that
+      if (warm < 2) {
+        warm++; clock.getDelta(); renderer.render(scene, camera);
+        if (warm === 2) { wrap.classList.add("has-3d"); wrap.classList.remove("wait-3d"); }
+        return;
+      }
       const dt = Math.min(clock.getDelta(), .1);
       const k = dt * 60; t += dt;
 
-      if (!landed) {
-        dropV -= .02 * k; dropY += dropV * k;
-        if (dropY <= 0) {
-          dropY = 0;
-          if (!splashed) splash();
-          if (Math.abs(dropV) < .06) { landed = true; dropV = 0; }
-          else { sq = Math.min(.35, Math.abs(dropV) * 1.6); sqV = 0; dropV = -dropV * .32; }
+      // springy bits run in fixed 60 Hz steps so a slow frame never makes them jump
+      const steps = Math.min(6, Math.max(1, Math.round(k)));
+      for (let s = 0; s < steps; s++) {
+        if (!landed) {
+          dropV -= .02; dropY += dropV;
+          if (dropY <= 0) {
+            dropY = 0;
+            if (!splashed) splash();
+            if (Math.abs(dropV) < .06) { landed = true; dropV = 0; }
+            else { sq = Math.min(.35, Math.abs(dropV) * 1.6); sqV = 0; dropV = -dropV * .32; }
+          }
         }
+        sqV += -sq * .28; sqV *= .8; sq += sqV;
       }
-      if (!dragging) rotVel += (baseSpin - rotVel) * .03 * k;
+      if (!dragging) rotVel += (baseSpin - rotVel) * Math.min(1, .03 * k);
       rotY += (rotVel + spinBoost) * k;
       spinBoost *= Math.pow(.92, k);
-      tiltX += (my * .45 - tiltX) * .06 * k;
-      tiltY += (mx * .7 - tiltY) * .06 * k;
-      sqV += -sq * .28 * k; sqV *= Math.pow(.8, k); sq += sqV * k;
+      tiltX += (my * .45 - tiltX) * Math.min(1, .06 * k);
+      tiltY += (mx * .7 - tiltY) * Math.min(1, .06 * k);
       flash *= Math.pow(.9, k);
 
       group.position.y = dropY + (landed && !reduceMotion ? Math.sin(t * 1.6) * .09 : 0);
@@ -547,7 +594,7 @@
       const lerpK = 1 - Math.pow(.86, k);
       mat.color.lerp(targetCol, lerpK);
       mat.emissive.copy(targetEm).lerp(WHITE, flash * .6);
-      if (prism && (!lite || (frameNo++ & 1) === 0)) paint(true, t);
+      if (prism && (!lite || half || (frameNo++ & 1) === 0)) paint(true, t);
 
       sparkleGroup.rotation.y = t * .15;
       const tierBoost = 1 + curIdx / 9;
@@ -559,9 +606,10 @@
       if (landed && !reduceMotion && !dragging) { idle += dt; if (idle > 3.6) { idle = 0; reroll(false); } }
       renderer.render(scene, camera);
     }
+    group.position.y = dropY;
     frame();
-    wrap.classList.add("has-3d");
-  })();
+    return true;
+  }
 
   /* =========================================================
      HOW: income ticker

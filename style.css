@@ -360,7 +360,7 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 .nugget3d { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .6s; cursor: grab; outline: none; }
 .nugget3d:active { cursor: grabbing; }
 .hero-visual.has-3d .nugget3d { opacity: 1; }
-.hero-visual.has-3d .nugget-fallback { opacity: 0; }
+.hero-visual.has-3d .nugget-fallback, .hero-visual.wait-3d .nugget-fallback { opacity: 0; }
 .hv-label {
   position: absolute; left: 50%; bottom: 5%; transform: translateX(-50%);
   display: flex; align-items: center; gap: .7rem; white-space: nowrap;
@@ -825,6 +825,38 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 .pets { background: var(--oil-2); }
 .pets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
 @media (max-width: 900px) { .pets-grid { grid-template-columns: 1fr; } .fuse { order: 2; } }
+
+/* the real in-game menus: columns sized by aspect ratio so both pictures end up the same height */
+.pets-shots {
+  display: grid; grid-template-columns: 1.591fr 1.086fr; gap: clamp(1.2rem, 3vw, 2.4rem);
+  align-items: end; margin-top: clamp(2.5rem, 6vw, 4.5rem);
+}
+.shot { position: relative; margin: 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .9rem; }
+.shot::before {
+  content: ""; position: absolute; inset: 8% 6% 14%; z-index: -1; border-radius: 40px;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--sc) 38%, transparent), transparent);
+}
+.shot img {
+  display: block; width: 100%; height: auto;
+  filter: drop-shadow(0 22px 30px rgba(0, 0, 0, .5));
+  transition: transform .45s var(--ease-pop);
+  pointer-events: none;
+}
+.shot figcaption { display: flex; align-items: center; gap: .6rem; font-family: var(--f-mono); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.shot figcaption b {
+  font-family: var(--f-display); font-weight: 400; font-size: 1.35rem; letter-spacing: .02em; text-transform: none;
+  color: var(--batter); padding: .2rem .8rem; border-radius: 999px; border: 2px solid var(--sc);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--sc) 35%, transparent);
+}
+@media (hover: hover) {
+  .shot:hover img { transform: translateY(-8px) rotate(-1deg) scale(1.02); }
+  .shot:nth-child(2):hover img { transform: translateY(-8px) rotate(1deg) scale(1.02); }
+}
+@media (max-width: 760px) {
+  .pets-shots { grid-template-columns: 1fr; }
+  .shot:nth-child(2) img { width: min(100%, 460px); }
+}
+.lite .shot img { filter: none; transition: none; }
 .boosts { list-style: none; margin: 1.6rem 0 2rem; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; }
 .boosts li { display: flex; align-items: baseline; gap: .45rem; padding: .55rem .9rem; border-radius: 14px; background: var(--crust); border: 1px solid var(--line); }
 .boosts b { font-family: var(--f-display); font-weight: 400; color: var(--mustard); font-size: 1.15rem; }
@@ -1468,7 +1500,17 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 .lite .grain { display: none; }
 .lite .nav-pill { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(36, 21, 13, .95); }
 .lite .toc-chips { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(27, 15, 8, .97); }
-.lite .halo, .lite .hero-visual.is-prism .halo { animation: none; filter: blur(22px); }
+/* hero on phones: no blur filters and no colour transition (those repainted the whole
+   stage on every re-roll), the gradients are already soft on their own */
+.lite .hero-visual { transition: none; }
+.lite .halo { animation: none; filter: none; }
+.lite .hero-visual.is-prism .halo {
+  animation: none; filter: none; opacity: .42;
+  -webkit-mask-image: radial-gradient(closest-side, #000 20%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 20%, transparent 100%);
+}
+.lite .pedestal::before { filter: none; }
+.lite .hero-visual.is-prism .hv-label b, .lite .hero-visual.is-prism .hv-tier { animation: none; }
 .lite .btn-play::after { animation: none; display: none; }
 .lite .sign, .lite .hcard.pulse, .lite .boss.live .boss-state, .lite .dot-live { animation: none; }
 .lite .hcard.prism { animation: cardFloat 6s ease-in-out infinite; }
