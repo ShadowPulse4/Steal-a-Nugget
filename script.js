@@ -1018,6 +1018,139 @@
     })();
   })();
 
+  /* =========================================================
+     HOW TO PLAY: the Heist Handbook
+     The receipt (desktop) and the chip row (phones/tablets) are
+     two tab lists for the same 12 chapter panels.
+     ========================================================= */
+  (function handbook() {
+    const panels = $$("#hbPanels > .chapter");
+    if (!panels.length) return;
+    const ids = panels.map(p => p.id.replace(/^ch-/, ""));
+    const recTabs = $$("#toc .rc-tab"), chipTabs = $$(".toc-chips .chip-tab");
+    const titles = recTabs.map(t => $(".t", t).textContent);
+    const chipTrack = $(".toc-chips-track"), readPct = $("#readPct"), readBar = $("#readBar");
+    const seen = new Set([0]);
+
+    // previous / next buttons under every chapter
+    panels.forEach((p, i) => {
+      const nav = document.createElement("div");
+      nav.className = "ch-nav";
+      nav.innerHTML =
+        (i > 0 ? `<button type="button" class="btn btn-ghost btn-sm" data-chapter="${ids[i - 1]}">← ${titles[i - 1]}</button>` : "<span></span>") +
+        (i < panels.length - 1 ? `<button type="button" class="btn btn-play btn-sm" data-chapter="${ids[i + 1]}">Next: ${titles[i + 1]} →</button>` : "");
+      p.appendChild(nav);
+    });
+
+    function show(id, { scroll = false, focusTab = null } = {}) {
+      const i = ids.indexOf(id);
+      if (i < 0) return;
+      seen.add(i);
+      panels.forEach((p, k) => { p.hidden = k !== i; });
+      [recTabs, chipTabs].forEach(list => list.forEach((t, k) => {
+        const on = k === i;
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        t.tabIndex = on ? 0 : -1;
+        t.classList.toggle("active", on);
+        t.classList.toggle("done", !on && seen.has(k));
+      }));
+      readPct.textContent = `${seen.size}/${panels.length}`;
+      readBar.style.transform = `scaleX(${seen.size / panels.length})`;
+      const chip = chipTabs[i];
+      if (chip && chipTrack && chipTrack.offsetParent) {
+        chipTrack.scrollTo({ left: chip.offsetLeft - (chipTrack.clientWidth - chip.offsetWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" });
+      }
+      if (focusTab) focusTab.focus({ preventScroll: true });
+      if (scroll) {
+        const top = panels[i].getBoundingClientRect().top;
+        if (top < 90 || top > window.innerHeight * .55) panels[i].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      }
+      restart(panels[i], "ch-in");
+      Sound.swoosh();
+    }
+
+    document.addEventListener("click", e => {
+      const t = e.target.closest("[data-chapter]");
+      if (!t || !ids.includes(t.dataset.chapter)) return;
+      e.preventDefault();
+      show(t.dataset.chapter, { scroll: true });
+    });
+    // arrow keys move between tabs
+    [recTabs, chipTabs].forEach(list => list.forEach((t, k) => t.addEventListener("keydown", e => {
+      const next = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (!next) return;
+      e.preventDefault();
+      const n = (k + next + list.length) % list.length;
+      show(ids[n], { focusTab: list[n] });
+    })));
+    // deep link: #ch-rarities opens that chapter
+    const h = location.hash.replace(/^#ch-/, "");
+    if (h && h !== location.hash && ids.includes(h)) show(h, { scroll: true });
+  })();
+
+  /* ---------- run a callback only while an element is on screen ---------- */
+  function whileVisible(el, fn) {
+    if (!el) return;
+    let on = false, raf = 0, t0 = 0;
+    const loop = now => { if (!on) return; fn((now - t0) / 1000); raf = requestAnimationFrame(loop); };
+    new IntersectionObserver(([e]) => {
+      on = e.isIntersecting;
+      if (on) { t0 = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); }
+    }).observe(el);
+  }
+
+  /* ---------- handbook: plot income counter ---------- */
+  const plotCash = $("#plotCash");
+  if (plotCash) {
+    if (reduceMotion) plotCash.textContent = "$2,400";
+    else {
+      let sum = 0, last = 0;
+      whileVisible($(".plot-demo"), t => {
+        if (t - last < .12) return;
+        last = t; sum += 7 + Math.round(Math.random() * 9);
+        plotCash.textContent = "$" + sum.toLocaleString("en-US");
+      });
+    }
+  }
+
+  /* ---------- handbook: speed gate track ---------- */
+  const gateTrack = $(".gate-track");
+  if (gateTrack) {
+    const gts = $$("li", gateTrack), marks = [.12, .38, .64, .9];
+    const setP = p => {
+      gateTrack.style.setProperty("--p", p.toFixed(3));
+      gts.forEach((g, i) => g.classList.toggle("open", p >= marks[i]));
+    };
+    if (reduceMotion) setP(1);
+    else whileVisible(gateTrack, t => { const c = t % 6.5; setP(c < 5 ? c / 5 : 1); });
+  }
+
+  /* ---------- handbook: upcoming boss rotation (same rule as the timer) ---------- */
+  (function bossSchedule() {
+    const body = $("#schedBody");
+    const cards = [$("#gbKing"), $("#gbDragon")];
+    const B = [
+      { name: "Nugget King", reward: "King Nugget", color: "var(--mustard)" },
+      { name: "Lava Dragon", reward: "Dragon Nugget", color: "var(--m-lava)" },
+    ];
+    function render() {
+      const now = Date.now() - ANCHOR_UTC_HOUR * 3600 * 1000;
+      const idx = Math.floor(now / BLOCK);
+      cards.forEach((c, i) => c && c.classList.toggle("live", idx % 2 === i));
+      if (!body) return;
+      const fmt = new Intl.DateTimeFormat(undefined, { weekday: "short", hour: "2-digit", minute: "2-digit" });
+      const rows = [];
+      for (let k = 0; k < 7; k++) {
+        const block = idx + k, b = B[block % 2];
+        const start = new Date(block * BLOCK + ANCHOR_UTC_HOUR * 3600 * 1000);
+        rows.push(`<tr class="${k === 0 ? "now" : ""}" style="--bc:${b.color}"><td>${fmt.format(start)}${k === 0 ? '<span class="now-pill">Now</span>' : ""}</td><td><span class="boss-chip">${b.name}</span></td><td>${b.reward}</td></tr>`);
+      }
+      body.innerHTML = rows.join("");
+    }
+    render();
+    setInterval(render, 30 * 1000);
+  })();
+
   /* ---------- copyright year ---------- */
   const yr = $("#year"); if (yr) yr.textContent = new Date().getFullYear();
 })();
