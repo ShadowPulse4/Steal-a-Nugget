@@ -11,6 +11,14 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  // phones, tablets and low-core devices get a lighter version of every effect
+  const lite = window.matchMedia("(hover: none), (pointer: coarse)").matches || (navigator.hardwareConcurrency || 8) <= 4;
+  if (lite) document.documentElement.classList.add("lite");
+  // pause all CSS animations inside sections that are off screen
+  if ("IntersectionObserver" in window) {
+    const pauser = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle("paused", !e.isIntersecting)), { rootMargin: "250px 0px" });
+    document.querySelectorAll(".hero, .section, .final").forEach(s => pauser.observe(s));
+  }
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const rand = (a, b) => a + Math.random() * (b - a);
@@ -264,7 +272,7 @@
     const ctx = cv.getContext("2d");
     let w, h, parts = [];
     function size() {
-      const dpr = Math.min(window.devicePixelRatio || 1, canHover ? 2 : 1.5);
+      const dpr = lite ? 1 : Math.min(window.devicePixelRatio || 1, 2);
       w = cv.clientWidth; h = cv.clientHeight;
       cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
@@ -278,7 +286,7 @@
       };
     }
     size();
-    parts = Array.from({ length: Math.round(Math.min(70, w / 16)) }, () => make(true));
+    parts = Array.from({ length: Math.round(Math.min(lite ? 26 : 70, w / 16)) }, () => make(true));
     window.addEventListener("resize", size);
     let visible = true;
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(cv);
@@ -314,9 +322,9 @@
     const T = window.THREE;
     let renderer;
     try {
-      renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, powerPreference: "high-performance" });
+      renderer = new T.WebGLRenderer({ canvas: cv, antialias: !lite, alpha: true, powerPreference: lite ? "default" : "high-performance" });
     } catch (e) { return; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, canHover ? 2 : 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lite ? 1.25 : 2));
     renderer.outputEncoding = T.sRGBEncoding;
     renderer.toneMapping = T.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
@@ -344,7 +352,7 @@
 
     // nugget geometry: a squircle blob, flattened, lumpy, with a notch
     const geo = (() => {
-      const g = new T.SphereGeometry(1, 30, 20);
+      const g = lite ? new T.SphereGeometry(1, 22, 14) : new T.SphereGeometry(1, 30, 20);
       const p = g.attributes.position, v = new T.Vector3();
       for (let i = 0; i < p.count; i++) {
         v.fromBufferAttribute(p, i);
@@ -387,10 +395,10 @@
       colAttr.needsUpdate = true;
     }
 
-    const mat = new T.MeshPhysicalMaterial({
-      color: 0xffffff, vertexColors: true, flatShading: true,
-      roughness: .3, metalness: .1, clearcoat: 1, clearcoatRoughness: .15, envMapIntensity: 1.3,
-    });
+    // lite devices use the cheaper standard material (no clearcoat pass)
+    const mat = lite
+      ? new T.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, flatShading: true, roughness: .3, metalness: .1, envMapIntensity: 1.4 })
+      : new T.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, flatShading: true, roughness: .3, metalness: .1, clearcoat: 1, clearcoatRoughness: .15, envMapIntensity: 1.3 });
     const group = new T.Group();
     group.add(new T.Mesh(geo, mat));
     scene.add(group);
@@ -414,7 +422,7 @@
     })();
     const sparkleGroup = new T.Group(); scene.add(sparkleGroup);
     const sparkles = [];
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < (lite ? 12 : 24); i++) {
       const s = new T.Sprite(new T.SpriteMaterial({ map: starTex, color: 0xffffff, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
       const a = Math.random() * Math.PI * 2, r = 1.8 + Math.random() * 1.1;
       s.position.set(Math.cos(a) * r, (Math.random() - .35) * 1.9, Math.sin(a) * r * .75);
@@ -506,10 +514,13 @@
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(wrap);
     const clock = new T.Clock();
 
-    function frame() {
+    let lastDraw = 0, frameNo = 0;
+    function frame(now = 0) {
       requestAnimationFrame(frame);
+      if (!visible) { clock.getDelta(); return; }
+      if (lite && now - lastDraw < 31) return; // ~30 fps on phones and tablets
+      lastDraw = now;
       const dt = Math.min(clock.getDelta(), .1);
-      if (!visible) return;
       const k = dt * 60; t += dt;
 
       if (!landed) {
@@ -536,7 +547,7 @@
       const lerpK = 1 - Math.pow(.86, k);
       mat.color.lerp(targetCol, lerpK);
       mat.emissive.copy(targetEm).lerp(WHITE, flash * .6);
-      if (prism) paint(true, t);
+      if (prism && (!lite || (frameNo++ & 1) === 0)) paint(true, t);
 
       sparkleGroup.rotation.y = t * .15;
       const tierBoost = 1 + curIdx / 9;
@@ -772,8 +783,21 @@
   });
 
   let rctx, rw, rh, drops = [], flashA = 0, rainVisible = false;
+  const RM = lite ? 2 : 1; // rain motion per drawn frame
+  // pre-drawn sprites so the weather doesn't build gradients for every drop, every frame
+  const sprite = (size, draw) => { const c = document.createElement("canvas"); c.width = c.height = size; draw(c.getContext("2d"), size); return c; };
+  const lavaSprite = sprite(64, (x, s) => {
+    const g = x.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    g.addColorStop(0, "rgba(255,230,120,1)"); g.addColorStop(.4, "rgba(255,90,23,.9)"); g.addColorStop(1, "rgba(255,40,0,0)");
+    x.fillStyle = g; x.fillRect(0, 0, s, s);
+  });
+  const glintSprite = sprite(64, (x, s) => {
+    const g = x.createLinearGradient(0, 0, s, 0);
+    g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, "rgba(240,244,250,1)"); g.addColorStop(1, "rgba(255,255,255,0)");
+    x.fillStyle = g; x.fillRect(0, s / 2 - 1, s, 2); x.fillRect(s / 2 - 1, s * .3, 2, s * .4);
+  });
   function sizeRain() {
-    const dpr = Math.min(window.devicePixelRatio || 1, canHover ? 2 : 1.5);
+    const dpr = lite ? .7 : Math.min(window.devicePixelRatio || 1, 2);
     rw = rainCv.clientWidth; rh = rainCv.clientHeight;
     rainCv.width = rw * dpr; rainCv.height = rh * dpr; rctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
@@ -793,7 +817,7 @@
   function resetRain() {
     if (!rctx) return;
     const count = { lava: 90, frost: 110, candy: 120, toxic: 120, electric: 140, chrome: 60, void: 160, cosmic: 160 }[rainType];
-    const scale = Math.min(1, rw / 1100) * .7 + .3;
+    const scale = (Math.min(1, rw / 1100) * .7 + .3) * (lite ? .55 : 1);
     drops = Array.from({ length: Math.round(count * scale) }, () => makeDrop(true));
     if (reduceMotion) drawRain();
   }
@@ -812,13 +836,13 @@
       if (flashA > 0) {
         ctx.fillStyle = `rgba(255,240,140,${flashA * .18})`; ctx.fillRect(0, 0, rw, rh);
         drawBolt(ctx, rand(rw * .1, rw * .9), flashA);
-        flashA -= .08;
+        flashA -= .08 * RM;
       }
     }
     for (const d of drops) {
-      d.tw += .05; d.rot += d.vr;
+      d.tw += .05 * RM; d.rot += d.vr * RM;
       if (t === "void") {
-        d.a += .012 * (300 / (d.dist + 60)); d.dist -= 1.1 + 120 / (d.dist + 20);
+        d.a += .012 * (300 / (d.dist + 60)) * RM; d.dist -= (1.1 + 120 / (d.dist + 20)) * RM;
         d.x = rw / 2 + Math.cos(d.a) * d.dist; d.y = rh / 2 + Math.sin(d.a) * d.dist * .6;
         if (d.dist < 8) Object.assign(d, makeDrop(false));
         ctx.fillStyle = Math.random() < .5 ? "rgba(122,77,255,.8)" : "rgba(200,170,255,.7)";
@@ -830,7 +854,7 @@
         ctx.fillStyle = `rgba(255,240,255,${a})`;
         ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, 6.28); ctx.fill();
         if (d.shoot) {
-          d.x += 9; d.y += 4;
+          d.x += 9 * RM; d.y += 4 * RM;
           const g = ctx.createLinearGradient(d.x - 90, d.y - 40, d.x, d.y);
           g.addColorStop(0, "rgba(192,91,255,0)"); g.addColorStop(1, "rgba(255,230,255,.9)");
           ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(d.x - 90, d.y - 40); ctx.lineTo(d.x, d.y); ctx.stroke();
@@ -838,13 +862,11 @@
         } else if (Math.random() < .0004) d.shoot = true;
         continue;
       }
-      d.x += d.vx; d.y += d.vy;
-      if (t === "frost") d.x += Math.sin(d.tw) * .6;
+      d.x += d.vx * RM; d.y += d.vy * RM;
+      if (t === "frost") d.x += Math.sin(d.tw) * .6 * RM;
       ctx.save(); ctx.translate(d.x, d.y);
       if (t === "lava") {
-        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, d.r * 2.2);
-        g.addColorStop(0, "rgba(255,230,120,1)"); g.addColorStop(.4, "rgba(255,90,23,.9)"); g.addColorStop(1, "rgba(255,40,0,0)");
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, d.r * 2.2, 0, 6.28); ctx.fill();
+        ctx.drawImage(lavaSprite, -d.r * 2.2, -d.r * 2.2, d.r * 4.4, d.r * 4.4);
         ctx.strokeStyle = "rgba(255,90,23,.35)"; ctx.lineWidth = d.r; ctx.lineCap = "round";
         ctx.beginPath(); ctx.moveTo(0, -d.r * 5); ctx.lineTo(0, 0); ctx.stroke();
       } else if (t === "frost") {
@@ -861,9 +883,9 @@
         ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-d.vx * 3, -d.vy * 3); ctx.stroke();
       } else if (t === "chrome") {
         ctx.rotate(-.5);
-        const g = ctx.createLinearGradient(-d.r, 0, d.r, 0);
-        g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, `rgba(240,244,250,${.5 + Math.sin(d.tw * 3) * .4})`); g.addColorStop(1, "rgba(255,255,255,0)");
-        ctx.fillStyle = g; ctx.fillRect(-d.r, -1, d.r * 2, 2); ctx.fillRect(-1, -d.r * .4, 2, d.r * .8);
+        ctx.globalAlpha = .5 + Math.sin(d.tw * 3) * .4;
+        ctx.drawImage(glintSprite, -d.r, -d.r, d.r * 2, d.r * 2);
+        ctx.globalAlpha = 1;
       }
       ctx.restore();
       if (d.y > rh + 40 || d.x > rw + 60 || d.x < -60) Object.assign(d, makeDrop(false));
@@ -879,7 +901,15 @@
     sizeRain(); resetRain();
     window.addEventListener("resize", () => { sizeRain(); resetRain(); });
     new IntersectionObserver(([e]) => { rainVisible = e.isIntersecting; }).observe(rainsSec);
-    if (!reduceMotion) (function loop() { if (rainVisible) drawRain(); requestAnimationFrame(loop); })();
+    // phones/tablets: draw the weather at ~30 fps, moving twice as far per frame
+    let rainLast = 0;
+    if (!reduceMotion) (function loop(now = 0) {
+      requestAnimationFrame(loop);
+      if (!rainVisible) return;
+      if (lite && now - rainLast < 31) return;
+      rainLast = now;
+      drawRain();
+    })();
     else drawRain();
   }
 
@@ -998,10 +1028,10 @@
     const cv = $("#emberCanvas"); if (!cv || reduceMotion) return;
     const ctx = cv.getContext("2d");
     let w, h, ps = [], vis = false;
-    const size = () => { const d = Math.min(window.devicePixelRatio || 1, 2); w = cv.clientWidth; h = cv.clientHeight; cv.width = w * d; cv.height = h * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+    const size = () => { const d = lite ? 1 : Math.min(window.devicePixelRatio || 1, 2); w = cv.clientWidth; h = cv.clientHeight; cv.width = w * d; cv.height = h * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
     size(); window.addEventListener("resize", size);
     const mk = init => ({ x: rand(0, w), y: init ? rand(0, h) : h + 10, vy: rand(-.6, -1.8), r: rand(1, 3), life: rand(.5, 1), ph: rand(0, 6) });
-    ps = Array.from({ length: 50 }, () => mk(true));
+    ps = Array.from({ length: lite ? 24 : 50 }, () => mk(true));
     new IntersectionObserver(([e]) => { vis = e.isIntersecting; }).observe(cv);
     (function loop() {
       if (vis) {
