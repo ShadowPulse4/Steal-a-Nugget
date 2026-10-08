@@ -1430,23 +1430,21 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 @media (max-width: 420px) { .carry-row { grid-template-columns: 6rem minmax(0, 1fr); gap: .6rem; } .carry-l { font-size: .95rem; } }
 
 /* ---------- handbook inside the home page ---------- */
-.rc-list .rc-tab, .toc-chips .chip-tab { font: inherit; border: 0; background: none; cursor: pointer; text-align: left; }
+.rc-list .rc-tab, .toc-chips .chip-tab { cursor: pointer; text-decoration: none; }
 .rc-list .rc-tab { width: 100%; color: var(--paper-ink); font-family: var(--f-mono); font-size: .8rem; }
 .rc-list .rc-tab:focus-visible { outline: 3px solid var(--ketchup); outline-offset: 1px; }
-.toc-chips .chip-tab { background: var(--crust); border: 1px solid var(--line); font-family: var(--f-mono); }
 .toc-chips { margin-inline: calc(-1 * var(--gutter)); margin-bottom: 1.4rem; }
 .toc-chips-track { padding-inline: var(--gutter); scroll-snap-type: x proximity; }
 .toc-chips .chip-tab { scroll-snap-align: center; }
 .handbook { padding-block: 0; }
 .handbook .receipt-wrap { padding-top: 0; }
 .handbook .g-content { max-width: none; }
-.handbook .chapter { padding-block: 0 .5rem; border-bottom: 0; scroll-margin-top: 0; outline: none; }
+/* chapters stacked: scroll straight through, dashed rule between them */
+.handbook .chapter { padding-block: clamp(2.6rem, 5vw, 4rem); border-bottom: 2px dashed var(--line); scroll-margin-top: 0; }
+.handbook .chapter:first-child { padding-top: 0; }
+.handbook .chapter:last-child { border-bottom: 0; padding-bottom: 0; }
 @media (max-width: 1000px) { .handbook .chapter { scroll-margin-top: 56px; } }
-.handbook .chapter.ch-in { animation: chIn .45s var(--ease-out); }
-@keyframes chIn { from { opacity: 0; transform: translateY(16px); } }
 .handbook .ch-title { margin: 0; }
 @media (min-width: 601px) {
   .handbook .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 1.6rem; margin: 1.6rem 0 2rem; }
 }
-.ch-nav { display: flex; justify-content: space-between; align-items: center; gap: .8rem; flex-wrap: wrap; margin-top: 2.6rem; padding-top: 1.4rem; border-top: 2px dashed var(--line); }
-.ch-nav .btn { white-space: normal; text-align: left; }

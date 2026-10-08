@@ -1020,72 +1020,43 @@
 
   /* =========================================================
      HOW TO PLAY: the Heist Handbook
-     The receipt (desktop) and the chip row (phones/tablets) are
-     two tab lists for the same 12 chapter panels.
+     All chapters are stacked; you just scroll. The receipt (desktop)
+     and the chip row (phones/tablets) follow along: the current
+     chapter is highlighted, chapters you passed are struck through.
      ========================================================= */
   (function handbook() {
-    const panels = $$("#hbPanels > .chapter");
-    if (!panels.length) return;
-    const ids = panels.map(p => p.id.replace(/^ch-/, ""));
-    const recTabs = $$("#toc .rc-tab"), chipTabs = $$(".toc-chips .chip-tab");
-    const titles = recTabs.map(t => $(".t", t).textContent);
+    const chapters = $$("#hbPanels > .chapter");
+    if (!chapters.length) return;
+    const recLinks = $$("#toc .rc-tab"), chips = $$(".toc-chips .chip-tab");
     const chipTrack = $(".toc-chips-track"), readPct = $("#readPct"), readBar = $("#readBar");
-    const seen = new Set([0]);
-
-    // previous / next buttons under every chapter
-    panels.forEach((p, i) => {
-      const nav = document.createElement("div");
-      nav.className = "ch-nav";
-      nav.innerHTML =
-        (i > 0 ? `<button type="button" class="btn btn-ghost btn-sm" data-chapter="${ids[i - 1]}">← ${titles[i - 1]}</button>` : "<span></span>") +
-        (i < panels.length - 1 ? `<button type="button" class="btn btn-play btn-sm" data-chapter="${ids[i + 1]}">Next: ${titles[i + 1]} →</button>` : "");
-      p.appendChild(nav);
-    });
-
-    function show(id, { scroll = false, focusTab = null } = {}) {
-      const i = ids.indexOf(id);
-      if (i < 0) return;
-      seen.add(i);
-      panels.forEach((p, k) => { p.hidden = k !== i; });
-      [recTabs, chipTabs].forEach(list => list.forEach((t, k) => {
-        const on = k === i;
-        t.setAttribute("aria-selected", on ? "true" : "false");
-        t.tabIndex = on ? 0 : -1;
-        t.classList.toggle("active", on);
-        t.classList.toggle("done", !on && seen.has(k));
+    let last = -2, ticking = false;
+    function update() {
+      ticking = false;
+      const line = window.innerHeight * .4;
+      let idx = -1;
+      chapters.forEach((c, i) => { if (c.getBoundingClientRect().top < line) idx = i; });
+      // reading progress through the handbook
+      const first = chapters[0].getBoundingClientRect().top;
+      const end = chapters[chapters.length - 1].getBoundingClientRect().bottom - window.innerHeight * .6;
+      const rp = Math.min(1, Math.max(0, (line - first) / Math.max(1, end + line - first)));
+      readPct.textContent = Math.round(rp * 100) + "%";
+      readBar.style.transform = `scaleX(${rp})`;
+      if (idx === last) return;
+      last = idx;
+      [recLinks, chips].forEach(list => list.forEach((a, i) => {
+        a.classList.toggle("active", i === idx);
+        a.classList.toggle("done", i < idx);
+        if (i === idx) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
       }));
-      readPct.textContent = `${seen.size}/${panels.length}`;
-      readBar.style.transform = `scaleX(${seen.size / panels.length})`;
-      const chip = chipTabs[i];
+      const chip = chips[idx];
       if (chip && chipTrack && chipTrack.offsetParent) {
         chipTrack.scrollTo({ left: chip.offsetLeft - (chipTrack.clientWidth - chip.offsetWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" });
       }
-      if (focusTab) focusTab.focus({ preventScroll: true });
-      if (scroll) {
-        const top = panels[i].getBoundingClientRect().top;
-        if (top < 90 || top > window.innerHeight * .55) panels[i].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-      }
-      restart(panels[i], "ch-in");
-      Sound.swoosh();
     }
-
-    document.addEventListener("click", e => {
-      const t = e.target.closest("[data-chapter]");
-      if (!t || !ids.includes(t.dataset.chapter)) return;
-      e.preventDefault();
-      show(t.dataset.chapter, { scroll: true });
-    });
-    // arrow keys move between tabs
-    [recTabs, chipTabs].forEach(list => list.forEach((t, k) => t.addEventListener("keydown", e => {
-      const next = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
-      if (!next) return;
-      e.preventDefault();
-      const n = (k + next + list.length) % list.length;
-      show(ids[n], { focusTab: list[n] });
-    })));
-    // deep link: #ch-rarities opens that chapter
-    const h = location.hash.replace(/^#ch-/, "");
-    if (h && h !== location.hash && ids.includes(h)) show(h, { scroll: true });
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
   })();
 
   /* ---------- run a callback only while an element is on screen ---------- */
