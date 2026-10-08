@@ -264,7 +264,7 @@
     const ctx = cv.getContext("2d");
     let w, h, parts = [];
     function size() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, canHover ? 2 : 1.5);
       w = cv.clientWidth; h = cv.clientHeight;
       cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
@@ -316,7 +316,7 @@
     try {
       renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, powerPreference: "high-performance" });
     } catch (e) { return; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, canHover ? 2 : 1.5));
     renderer.outputEncoding = T.sRGBEncoding;
     renderer.toneMapping = T.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
@@ -562,6 +562,26 @@
     else setInterval(() => { v += Math.round(rand(3, 17)); cash.textContent = "$" + v.toLocaleString("en-US"); }, 450);
   }
 
+  /* ---------- steps swipe row (phones): dots follow the scroll ---------- */
+  (function stepDots() {
+    const row = $(".steps"), dots = $$("#stepDots button");
+    if (!row || !dots.length) return;
+    const steps = $$(".step", row);
+    let raf = 0;
+    const sync = () => {
+      raf = 0;
+      const mid = row.scrollLeft + row.clientWidth / 2;
+      let best = 0, bestD = Infinity;
+      steps.forEach((s, i) => { const d = Math.abs(s.offsetLeft + s.offsetWidth / 2 - mid); if (d < bestD) { bestD = d; best = i; } });
+      dots.forEach((d, i) => d.classList.toggle("on", i === best));
+    };
+    row.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(sync); }, { passive: true });
+    dots.forEach((d, i) => d.addEventListener("click", () => {
+      const s = steps[i];
+      row.scrollTo({ left: s.offsetLeft - (row.clientWidth - s.offsetWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" });
+    }));
+  })();
+
   /* =========================================================
      FRYER
      ========================================================= */
@@ -633,6 +653,11 @@
   }
 
   fryBtn?.addEventListener("click", () => {
+    // on phones the result card sits below the fryer: bring it into view
+    const rr = result.getBoundingClientRect();
+    if (rr.top < 70 || rr.bottom > window.innerHeight) {
+      result.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+    }
     fryBtn.disabled = true;
     fryBtn.textContent = "Frying…";
     fryer.classList.add("frying");
@@ -713,6 +738,10 @@
       b.tabIndex = on ? 0 : -1;
       if (on && focus) b.focus();
     });
+    const tabRow = $("#rainTabs"), sel = $(`#rainTabs [data-rain="${key}"]`);
+    if (tabRow && sel && tabRow.scrollWidth > tabRow.clientWidth + 2) {
+      tabRow.scrollTo({ left: sel.offsetLeft - (tabRow.clientWidth - sel.offsetWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" });
+    }
     const token = ++rainToken;
     const pre = mutImages[key];
     const ready = pre.complete && pre.naturalWidth ? Promise.resolve()
@@ -744,7 +773,7 @@
 
   let rctx, rw, rh, drops = [], flashA = 0, rainVisible = false;
   function sizeRain() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, canHover ? 2 : 1.5);
     rw = rainCv.clientWidth; rh = rainCv.clientHeight;
     rainCv.width = rw * dpr; rainCv.height = rh * dpr; rctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
