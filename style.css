@@ -501,7 +501,9 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 .chaser:nth-of-type(2) { animation-delay: .6s; background: var(--mustard); }
 .chaser:nth-of-type(3) { animation-delay: .85s; }
 .safe { position: absolute; right: 0; top: 0; bottom: 0; display: grid; place-items: center; padding: 0 .5rem; background: rgba(102, 224, 90, .15); border-left: 2px dashed var(--lettuce); font-family: var(--f-mono); font-size: .62rem; font-weight: 700; color: var(--lettuce); letter-spacing: .1em; z-index: 2; }
-@keyframes chaseRun { from { left: -60px; } to { left: 110%; } }
+.chase { container-type: inline-size; }
+.chase img, .chaser { left: 0; will-change: transform; }
+@keyframes chaseRun { from { transform: translateX(-60px); } to { transform: translateX(calc(100cqw + 10px)); } }
 
 .mini-roll { margin-top: auto; height: 52px; overflow: hidden; border-radius: 12px; border: 1px solid var(--line); background: var(--oil); }
 .mr-track { display: flex; flex-direction: column; animation: slot 4.2s var(--ease-out) infinite; }
@@ -1173,7 +1175,9 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 .cs-worker:nth-of-type(1) { animation-delay: .4s; }
 .cs-worker:nth-of-type(2) { animation-delay: .7s; background: var(--mustard); }
 .cs-worker:nth-of-type(3) { animation-delay: 1s; }
-@keyframes csRun { from { left: -70px; } to { left: 105%; } }
+.cs-lane { container-type: inline-size; }
+.cs-nugget, .cs-worker { left: 0; will-change: transform; }
+@keyframes csRun { from { transform: translateX(-70px); } to { transform: translateX(calc(100cqw + 6px)); } }
 .cs-safe { display: grid; place-items: center; padding: 0 1rem; background: rgba(102, 224, 90, .14); border-left: 3px dashed var(--lettuce); color: var(--lettuce); font-family: var(--f-display); font-size: 1.1rem; white-space: nowrap; }
 
 /* mini steps (a real sequence) */
@@ -1448,3 +1452,30 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 @media (min-width: 601px) {
   .handbook .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 1.6rem; margin: 1.6rem 0 2rem; }
 }
+
+/* =========================================================
+   PERFORMANCE
+   .paused: set on sections that are off screen, so their looping
+   CSS animations stop costing anything.
+   .lite: set on phones, tablets and low-core devices; swaps the
+   most expensive effects (animated blur, repainting gradients,
+   backdrop blur, animated shadows) for static versions.
+   ========================================================= */
+.paused, .paused *, .paused *::before, .paused *::after { animation-play-state: paused !important; }
+/* scroll-linked reveals are driven by scrolling, never pause those */
+.paused .reveal, .paused .split .w, .paused .r-bar i, .paused .l-bar i, .paused .carry-bar i { animation-play-state: running !important; }
+
+.lite .grain { display: none; }
+.lite .nav-pill { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(36, 21, 13, .95); }
+.lite .toc-chips { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(27, 15, 8, .97); }
+.lite .halo, .lite .hero-visual.is-prism .halo { animation: none; filter: blur(22px); }
+.lite .btn-play::after { animation: none; display: none; }
+.lite .sign, .lite .hcard.pulse, .lite .boss.live .boss-state, .lite .dot-live { animation: none; }
+.lite .hcard.prism { animation: cardFloat 6s ease-in-out infinite; }
+.lite .result[data-rarity="prismatic"] .rc-back, .lite .l-prism { animation: none; }
+.lite .hcard.sparkle .hc::after { animation: none; opacity: .55; }
+.lite .hero-bgtext { display: none; }
+.lite .rain-ring, .lite .rays, .lite .final-rays, .lite .boss-king .boss-bg { animation: none; }
+.lite .rain-ring { filter: blur(18px); }
+.lite .mut-card { animation: none; }
+.lite .boss.live .boss-art { animation: none; }
