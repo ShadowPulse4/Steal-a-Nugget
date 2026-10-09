@@ -1627,7 +1627,8 @@ kbd { display: inline-block; min-width: 1.7em; padding: .05em .45em; border-radi
 .news { padding-block: clamp(3rem, 7vw, 5rem); background: radial-gradient(60% 80% at 50% 0%, rgba(79, 200, 255, .1), transparent 70%), var(--oil); }
 .news-head { text-align: center; margin-bottom: clamp(1.6rem, 4vw, 2.4rem); }
 .news-head .h2 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.2rem); }
-.news-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .7rem; }
+.news-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; }
+@media (max-width: 999px) { .news-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .news-list li { position: relative; padding: 1rem 1.05rem 1.05rem; border-radius: 16px; background: var(--crust); border: 1px solid var(--line); display: flex; flex-direction: column; gap: .3rem; }
 .news-list li::before { content: "NEW"; position: absolute; top: -.6rem; right: .8rem; padding: .05rem .45rem; border-radius: 6px; background: var(--ketchup); color: #fff; border: 2px solid var(--ink); font-family: var(--f-mono); font-size: .6rem; font-weight: 700; letter-spacing: .12em; }
 .news-list b { font-family: var(--f-display); font-weight: 400; font-size: 1.2rem; color: var(--mustard); }
