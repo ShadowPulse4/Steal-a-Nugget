@@ -30,7 +30,7 @@
   --r-legendary: #ff9b1c;
   --r-mythic: #ff3a72;
   --r-smythic: #e3112f;
-  --r-umythic: #e423c8;
+  --r-umythic: #ff3fb4;
   --r-godly: #f4e2b0;
   --r-prismatic: #ff7af5;
   --s-golden: #ffcf33;
@@ -39,7 +39,7 @@
   --p-void: #8a5cff;
   --p-lava: #ff6a1f;
 
-  --m-electric: #4fc8ff;
+  --m-electric: #4a8dff;
   --m-candy: #ff7ab8;
   --m-frost: #a9dcff;
   --m-toxic: #a6f22a;
@@ -786,7 +786,7 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 }
 @keyframes mutSwap { 0% { transform: scale(.6) rotate(-12deg); filter: brightness(3) blur(6px); } 100% { transform: none; filter: none; } }
 @keyframes floatC2 { 50% { transform: translateY(-12px) rotate(-1.5deg); } }
-.bolt { position: absolute; width: 30%; top: -12%; right: -6%; fill: var(--m-electric); filter: drop-shadow(0 0 12px var(--m-electric)); opacity: 0; pointer-events: none; }
+.bolt { position: absolute; width: 30%; top: -12%; right: -6%; fill: #ffd84a; filter: drop-shadow(0 0 12px #ffd84a); opacity: 0; pointer-events: none; }
 .rains[data-rain="electric"] .bolt { opacity: 1; animation: zap 1.6s steps(1) infinite; }
 @keyframes zap { 0%, 40%, 60%, 100% { opacity: 1; } 45%, 55% { opacity: 0; } }
 .rain-info { min-width: 0; }
@@ -1654,6 +1654,32 @@ kbd { display: inline-block; min-width: 1.7em; padding: .05em .45em; border-radi
 .rain-facts .rf-wide b { font-weight: 600; line-height: 1.4; }
 .shop-h { margin: 1.2rem 0 .5rem; display: flex; align-items: baseline; flex-wrap: wrap; gap: .5rem; font-family: var(--f-display); font-weight: 400; font-size: 1.2rem; color: var(--batter); }
 .shop-h small { font-family: var(--f-mono); font-size: .7rem; color: var(--muted); }
+
+/* the egg wheel with all 9 eggs */
+.egg-spin-9 .egg { width: 17%; margin: -10.9% 0 0 -8.5%; transform: rotate(var(--a)) translateY(-135%) rotate(calc(var(--a) * -1)); }
+.egg.egg-rainbow { background: radial-gradient(circle at 35% 30%, #fff 0 8%, transparent 9%), conic-gradient(from 20deg, var(--rainbow)); }
+
+/* pets section: the 9 eggs of the Egg Spinner */
+.pets-shots { grid-template-columns: 1fr 1fr; align-items: center; }
+@media (max-width: 760px) { .pets-shots { grid-template-columns: 1fr; } }
+.eggshelf { width: 100%; padding: 1.1rem 1.1rem 1rem; border-radius: 26px; background: radial-gradient(80% 60% at 50% 0%, #2f73e6, transparent 70%), linear-gradient(#1b4bb3, #0d2a6e); border: 4px solid #3aa0ff; box-shadow: 0 0 0 4px #0b1d4d, 0 22px 40px rgba(0, 0, 0, .5), inset 0 2px 0 rgba(255, 255, 255, .15); }
+.esh-title { margin: 0 0 .8rem; text-align: center; font-family: var(--f-display); font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.3rem); line-height: 1; color: #fff; -webkit-text-stroke: .1em #0b3a9e; paint-order: stroke fill; text-shadow: 0 .07em 0 #0b2a70; letter-spacing: .02em; }
+.eggshelf ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+.eggshelf li { display: flex; flex-direction: column; align-items: center; gap: .3rem; padding: .7rem .3rem .5rem; border-radius: 14px; background: rgba(5, 18, 55, .55); border: 2px solid var(--b); box-shadow: inset 0 0 18px color-mix(in srgb, var(--b) 25%, transparent); }
+.eggshelf b { font-family: var(--f-display); font-weight: 400; font-size: .95rem; color: var(--b); text-shadow: 0 2px 0 rgba(0, 0, 0, .4); }
+.egg-x { width: 38%; max-width: 54px; aspect-ratio: .78; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 35% 28%, #fff 0 9%, transparent 10%), radial-gradient(circle at 66% 60%, var(--s) 0 9%, transparent 10%), radial-gradient(circle at 30% 70%, var(--s) 0 7%, transparent 8%), radial-gradient(circle at 40% 35%, var(--c), color-mix(in srgb, var(--c) 55%, var(--s)));
+  box-shadow: inset -4px -5px 0 rgba(0, 0, 0, .18), 0 6px 10px rgba(0, 0, 0, .45), 0 0 16px color-mix(in srgb, var(--b) 45%, transparent);
+  animation: eggBob 2.4s ease-in-out infinite alternate; }
+.eggshelf li:nth-child(3n + 2) .egg-x { animation-delay: -.8s; }
+.eggshelf li:nth-child(3n) .egg-x { animation-delay: -1.6s; }
+.egg-prism .egg-x { background: radial-gradient(circle at 35% 28%, #fff 0 9%, transparent 10%), conic-gradient(from 20deg, var(--rainbow)); }
+.egg-prism b { background: linear-gradient(90deg, var(--rainbow)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@keyframes eggBob { from { transform: translateY(0) rotate(-4deg); } to { transform: translateY(-5px) rotate(4deg); } }
+.lite .egg-x { animation: none; }
+.esh-note { margin: .8rem 0 0; text-align: center; font-family: var(--f-mono); font-size: .72rem; color: #cfe2ff; }
+.esh-note kbd { background: #0b2a70; border-color: rgba(255, 255, 255, .25); }
+@media (max-width: 400px) { .eggshelf b { font-size: .8rem; } .eggshelf li { padding: .55rem .2rem .45rem; } }
 
 /* end */
 

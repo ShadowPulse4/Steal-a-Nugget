@@ -34,7 +34,7 @@
     { id: "legendary",    name: "Legendary",    color: "#ff9b1c", income: "$25K/s",  fry: "12 min",     sell: "$750K" },
     { id: "mythic",       name: "Mythic",       color: "#ff3a72", income: "$125K/s", fry: "25 min",     sell: "$3.75M" },
     { id: "super_mythic", name: "Super Mythic", color: "#e3112f", income: "$600K/s", fry: "50 min",     sell: "$18M"  },
-    { id: "ultra_mythic", name: "Ultra Mythic", color: "#e423c8", income: "$3M/s",   fry: "1 h 45 min", sell: "$90M"  },
+    { id: "ultra_mythic", name: "Ultra Mythic", color: "#ff3fb4", income: "$3M/s",   fry: "1 h 45 min", sell: "$90M"  },
     { id: "godly",        name: "Godly",        color: "#f4e2b0", income: "$15M/s",  fry: "4 h",        sell: "$450M" },
   ];
   const PRISMATIC = { id: "prismatic", name: "Prismatic", color: "#ff7af5", special: true };
@@ -62,7 +62,7 @@
   }
 
   const MUTATIONS = {
-    electric: { name: "Electric", rain: "Thunder Rain", color: "#4fc8ff", img: "electric", x: 5,  chance: 25, strike: "Lightning", fx: "Electricity crackles around it.",
+    electric: { name: "Electric", rain: "Thunder Rain", color: "#4a8dff", img: "electric", x: 5,  chance: 25, strike: "Lightning", fx: "Electricity crackles around it.",
       desc: "Lightning strikes one nugget in the biome 3–7 seconds after the rain starts and turns it into a blue Electric Nugget that keeps crackling. While it rains, new nuggets there can turn Electric too." },
     candy:   { name: "Candy",   rain: "Candy Rain",   color: "#ff7ab8", img: "candy",   x: 6,  chance: 18, strike: "A giant candy", fx: "Candies circle it with sweet tails, sprinkles fall off it.",
       desc: "A giant candy strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Candy too." },
@@ -491,7 +491,7 @@
       legendary:    { c: "#ff8d14", r: .18, m: .35, cc: 1, e: "#6a2400", rim: "#ffd27a" },
       mythic:       { c: "#ff2f6a", r: .14, m: .25, cc: 1, e: "#6a0020", rim: "#ff9cbc" },
       super_mythic: { c: "#d60f2c", r: .12, m: .3,  cc: 1, e: "#5a000e", rim: "#ff6a6a" },
-      ultra_mythic: { c: "#e423c8", r: .12, m: .3,  cc: 1, e: "#4a0040", rim: "#ff8cf0" },
+      ultra_mythic: { c: "#ff2fae", r: .12, m: .3,  cc: 1, e: "#4a0030", rim: "#ff9ad8" },
       godly:        { c: "#f4e6c0", r: .08, m: .55, cc: 1, e: "#2a2010", rim: "#fff3c4" },
       prismatic:    { c: "#ffffff", r: .1,  m: .15, cc: 1, e: "#1a0a26", rim: "#ff7af5", prism: true },
     };
@@ -907,7 +907,7 @@
   }
   function drawBolt(ctx, x, a) {
     ctx.save();
-    ctx.strokeStyle = `rgba(225,245,255,${a})`; ctx.lineWidth = 3; ctx.shadowColor = "#4fc8ff"; ctx.shadowBlur = 20;
+    ctx.strokeStyle = `rgba(255,250,210,${a})`; ctx.lineWidth = 3; ctx.shadowColor = "#ffd84a"; ctx.shadowBlur = 20;
     ctx.beginPath(); let y = 0; ctx.moveTo(x, y);
     while (y < rh * .7) { y += rand(20, 50); x += rand(-30, 30); ctx.lineTo(x, y); }
     ctx.stroke(); ctx.restore();
@@ -918,7 +918,7 @@
     if (t === "electric") {
       if (Math.random() < .012) flashA = 1;
       if (flashA > 0) {
-        ctx.fillStyle = `rgba(150,215,255,${flashA * .18})`; ctx.fillRect(0, 0, rw, rh);
+        ctx.fillStyle = `rgba(255,240,150,${flashA * .16})`; ctx.fillRect(0, 0, rw, rh);
         drawBolt(ctx, rand(rw * .1, rw * .9), flashA);
         flashA -= .08 * RM;
       }
@@ -963,7 +963,7 @@
         ctx.fillStyle = "rgba(166,242,42,.85)";
         ctx.beginPath(); ctx.moveTo(0, -d.r * 2.4); ctx.quadraticCurveTo(d.r, -d.r * .2, d.r, d.r * .3); ctx.arc(0, d.r * .3, d.r, 0, Math.PI); ctx.quadraticCurveTo(-d.r, -d.r * .2, 0, -d.r * 2.4); ctx.fill();
       } else if (t === "electric") {
-        ctx.strokeStyle = "rgba(120,210,255,.75)"; ctx.lineWidth = d.r;
+        ctx.strokeStyle = "rgba(255,226,80,.75)"; ctx.lineWidth = d.r;
         ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-d.vx * 3, -d.vy * 3); ctx.stroke();
       } else if (t === "chrome") {
         ctx.drawImage(chromeSprite, -d.r, -d.r, d.r * 2, d.r * 2);

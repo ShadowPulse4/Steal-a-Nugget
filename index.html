@@ -279,7 +279,7 @@
               <div><dt>Index</dt><dd>Your nugget collection. Fill a page to claim money and speed.</dd></div>
               <div><dt>Egg Spinner</dt><dd>The machine in the hub where you hatch pets. Hold E at it.</dd></div>
               <div><dt>Fuse Machine</dt><dd>Turns 2 of the same pet into 1 with the next look.</dd></div>
-              <div><dt>Spatula</dt><dd>Knocks other players down for 3 seconds. Your weapon in boss battles.</dd></div>
+              <div><dt>Spatula</dt><dd>Hit a player who's carrying a stolen nugget: they lie still for 3 seconds and you can steal it. Your weapon in boss battles.</dd></div>
               <div><dt>Bear Trap</dt><dd>Place it in the field. A player carrying a stolen nugget who steps in drops it.</dd></div>
             </dl>
           </section>
@@ -440,7 +440,7 @@
               <span class="ch-tag">Chapter 05</span>
               <h3 class="h2 ch-title">Spatula &amp; <em>traps</em></h3>
             </header>
-            <p class="big">Out in the field, other players can mess up your run too. In the safe zone nobody can hit you.</p>
+            <p class="big">Out in the field, other players can steal your nugget too. In the safe zone nobody can hit you.</p>
             <div class="pvp-zones pvp-zones-sm" aria-hidden="true">
               <div class="pz-safe"><b>Safe zone</b><span class="pz-chip pz-off">No PvP</span></div>
               <div class="pz-lane">
@@ -454,7 +454,7 @@
             <h4 class="h3">The Spatula</h4>
             <div class="item-row">
               <img src="spatula.webp" alt="Spatula" class="ir-spatula" loading="lazy">
-              <p>Swing it to knock another player down as a ragdoll for 3 seconds. No hitting in the safe zone. In a boss battle, the spatula is your weapon against the boss.</p>
+              <p>Hit another player who's carrying a stolen nugget: they're knocked down as a ragdoll and lie still for 3 seconds, and you can steal their nugget. No hitting in the safe zone. In a boss battle, the spatula is your weapon against the boss.</p>
             </div>
             <h4 class="h3">Bear Traps</h4>
             <div class="item-row">
@@ -635,14 +635,17 @@
               <h3 class="h2 ch-title">Pets &amp; <em>eggs</em></h3>
             </header>
             <p class="big">Hold <kbd>E</kbd> at the <strong>Egg Spinner</strong> in the hub. Its menu shows every egg; spin 1 or up to 10 at once. The egg rolls out of the machine and hatches in a short film.</p>
-            <div class="egg-spin" aria-hidden="true">
+            <div class="egg-spin egg-spin-9" aria-hidden="true">
               <div class="es-wheel">
-                <span class="egg" style="--a:0deg;--c:#ffe7a6;--s:var(--r-common)"></span>
-                <span class="egg" style="--a:60deg;--c:#c9ffc0;--s:var(--r-uncommon)"></span>
-                <span class="egg" style="--a:120deg;--c:#c4dcff;--s:var(--r-rare)"></span>
-                <span class="egg" style="--a:180deg;--c:#e4ccff;--s:var(--r-epic)"></span>
-                <span class="egg" style="--a:240deg;--c:#ffd9b0;--s:var(--r-legendary)"></span>
-                <span class="egg" style="--a:300deg;--c:#ffc9dc;--s:var(--r-mythic)"></span>
+                <span class="egg" style="--a:0deg;--c:#fbf3e6;--s:#cdbfa8"></span>
+                <span class="egg" style="--a:40deg;--c:#7cf07a;--s:#1f9b2a"></span>
+                <span class="egg" style="--a:80deg;--c:#7fc0ff;--s:#1f5fd8"></span>
+                <span class="egg" style="--a:120deg;--c:#c99bff;--s:#6a1fc9"></span>
+                <span class="egg" style="--a:160deg;--c:#ffe066;--s:#d99a0a"></span>
+                <span class="egg" style="--a:200deg;--c:#8a3aa0;--s:#ff5fd8"></span>
+                <span class="egg" style="--a:240deg;--c:#3a2a44;--s:#ff3a4a"></span>
+                <span class="egg" style="--a:280deg;--c:#ff8a3a;--s:#b81e0a"></span>
+                <span class="egg egg-rainbow" style="--a:320deg;--c:#ffffff;--s:#ff7af5"></span>
               </div>
               <span class="es-pointer"></span>
               <div class="es-hub">Egg<br>Spinner</div>
@@ -863,7 +866,7 @@
               <details><summary>Is my nugget safe in the safe zone?</summary><p>Yes. Once you're over the red line it's yours for good, and if you walk into the field with it later, the workers leave you alone.</p></details>
               <details><summary>Does a rarer nugget slow me down more?</summary><p>No. Every raw nugget slows you down the same. Carry pets make it less.</p></details>
               <details><summary>Can I tell how good a nugget is before frying?</summary><p>A bit. On the counters they all look the same, but once you steal one it shows its true size above your head: the rarer, the bigger (a Godly one is 2.5x a Common one). Its rarity shows when it comes out of the fryer.</p></details>
-              <details><summary>What can other players do to me?</summary><p>Only things out in the field. A Spatula hit knocks you down as a ragdoll for 3 seconds. Step into someone's Bear Trap while you carry a stolen nugget and you drop it (anyone can grab it) and you're stuck for 7 seconds. Neither works in the safe zone.</p></details>
+              <details><summary>Can other players steal my nugget?</summary><p>Yes, but only out in the field. Get hit by a Spatula while you carry a stolen nugget and you lie still for 3 seconds while they steal it. Step into someone's Bear Trap and you drop it (anyone can grab it) and you're stuck for 7 seconds. Neither works in the safe zone.</p></details>
               <details><summary>Which rarities can I find?</summary><p>That depends on the biome. Every biome has its own most common nuggets, from Common in the Forest to Godly in Galaxy and Heaven.</p></details>
               <details><summary>How long does frying take?</summary><p>From 30 seconds for a Common to 24 hours for a Prismatic. Frying goes on while you're offline, and you can use up to 8 fryers at once.</p></details>
               <details><summary>How do mutations work?</summary><p>Every 10 minutes a Mutation Rain hits one biome for 30 seconds. A mutation multiplies a nugget's income, from x5 (Electric) to x50 (Cosmic).</p></details>
@@ -1112,7 +1115,7 @@
       <header class="sec-head">
         <p class="eyebrow">Player vs player</p>
         <h2 class="h2 split">Watch your <em>back</em></h2>
-        <p class="sec-lede">Out in the field, other players can mess up your run. Swing a spatula to knock someone down, or place Bear Traps for players running back with a stolen nugget. In the safe zone nobody can touch you.</p>
+        <p class="sec-lede">Out in the field, other players are after your nugget too. Hit someone carrying a stolen nugget with a spatula and take it, or place Bear Traps on their way back. In the safe zone nobody can touch you.</p>
       </header>
 
       <div class="pvp-zones" aria-hidden="true">
@@ -1131,12 +1134,12 @@
           <button class="pc-art" type="button" aria-label="Swing the spatula">
             <img class="pc-img pc-spatula" src="spatula.webp" alt="Spatula">
             <img class="pc-nug" src="logo.webp" alt="">
-            <span class="pc-pop">Bonk!</span>
+            <span class="pc-pop">Yoink!</span>
           </button>
           <div class="pc-body">
-            <p class="pc-kind">Knock players down</p>
+            <p class="pc-kind">Steal from players</p>
             <h3>Spatula</h3>
-            <p>Swing it to knock another player down as a ragdoll for 3 seconds. In a boss battle it's your weapon against the boss.</p>
+            <p>Hit a player who's carrying a stolen nugget: they lie still as a ragdoll for 3 seconds and you can steal their nugget. In a boss battle it's your weapon against the boss.</p>
             <p class="pc-rule"><span class="pc-lock" aria-hidden="true"></span>No hitting in the safe zone</p>
           </div>
         </article>
@@ -1199,8 +1202,22 @@
 
     <div class="wrap pets-shots">
       <figure class="shot reveal" style="--sc:#2a8bff">
-        <img src="egg-spinner.webp" alt="The Egg Spinner menu in Steal a Nugget" width="1432" height="900" loading="lazy" decoding="async">
-        <figcaption><b>Egg Spinner</b><span>In-game</span></figcaption>
+        <div class="eggshelf">
+          <p class="esh-title">Egg Spinner</p>
+          <ul>
+            <li style="--c:#fbf3e6;--s:#cdbfa8;--b:var(--r-common)"><span class="egg-x"></span><b>Common</b></li>
+            <li style="--c:#7cf07a;--s:#1f9b2a;--b:var(--r-uncommon)"><span class="egg-x"></span><b>Uncommon</b></li>
+            <li style="--c:#7fc0ff;--s:#1f5fd8;--b:var(--r-rare)"><span class="egg-x"></span><b>Rare</b></li>
+            <li style="--c:#c99bff;--s:#6a1fc9;--b:var(--r-epic)"><span class="egg-x"></span><b>Epic</b></li>
+            <li style="--c:#ffe066;--s:#d99a0a;--b:var(--r-legendary)"><span class="egg-x"></span><b>Legendary</b></li>
+            <li style="--c:#8a3aa0;--s:#ff5fd8;--b:var(--r-mythic)"><span class="egg-x"></span><b>Mythic</b></li>
+            <li style="--c:#3a2a44;--s:#ff3a4a;--b:var(--p-void)"><span class="egg-x"></span><b>Void</b></li>
+            <li style="--c:#ff8a3a;--s:#b81e0a;--b:var(--p-lava)"><span class="egg-x"></span><b>Lava</b></li>
+            <li class="egg-prism" style="--b:var(--r-prismatic)"><span class="egg-x"></span><b>Prismatic</b></li>
+          </ul>
+          <p class="esh-note">Hold <kbd>E</kbd> at the machine · spin 1 or up to 10 at once</p>
+        </div>
+        <figcaption><b>Egg Spinner</b><span>9 eggs</span></figcaption>
       </figure>
       <figure class="shot reveal" style="--sc:#ffc72c">
         <img src="fuse-machine.webp" alt="The Fuse Machine menu in Steal a Nugget" width="1215" height="1119" loading="lazy" decoding="async">
