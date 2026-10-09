@@ -24,38 +24,63 @@
   const rand = (a, b) => a + Math.random() * (b - a);
   const RAINBOW = ["#ff4b2b", "#ffc72c", "#3fd34c", "#1ad6e8", "#a050ff", "#ff3a72"];
 
-  /* ---------- game data (edit these to match the real game) ---------- */
+  /* ---------- game data (from the game's own settings, 9 Oct 2026) ---------- */
   const RARITIES = [
-    { id: "common",       name: "Common",       color: "#e8ad45", odds: 40   },
-    { id: "uncommon",     name: "Uncommon",     color: "#3fd34c", odds: 25   },
-    { id: "rare",         name: "Rare",         color: "#3483ff", odds: 15   },
-    { id: "super_rare",   name: "Super Rare",   color: "#1ad6e8", odds: 9    },
-    { id: "epic",         name: "Epic",         color: "#a050ff", odds: 5.5  },
-    { id: "legendary",    name: "Legendary",    color: "#ff9b1c", odds: 3    },
-    { id: "mythic",       name: "Mythic",       color: "#ff3a72", odds: 1.5  },
-    { id: "super_mythic", name: "Super Mythic", color: "#e3112f", odds: .75  },
-    { id: "prismatic",    name: "Prismatic",    color: "#ff7af5", odds: .25  },
+    { id: "common",       name: "Common",       color: "#e8ad45", income: "$200/s",  fry: "30 s",       sell: "$6K"   },
+    { id: "uncommon",     name: "Uncommon",     color: "#3fd34c", income: "$500/s",  fry: "45 s",       sell: "$15K"  },
+    { id: "rare",         name: "Rare",         color: "#3483ff", income: "$1.2K/s", fry: "1.5 min",    sell: "$36K"  },
+    { id: "super_rare",   name: "Super Rare",   color: "#1ad6e8", income: "$3K/s",   fry: "3 min",      sell: "$90K"  },
+    { id: "epic",         name: "Epic",         color: "#a050ff", income: "$7K/s",   fry: "6 min",      sell: "$210K" },
+    { id: "legendary",    name: "Legendary",    color: "#ff9b1c", income: "$25K/s",  fry: "12 min",     sell: "$750K" },
+    { id: "mythic",       name: "Mythic",       color: "#ff3a72", income: "$125K/s", fry: "25 min",     sell: "$3.75M" },
+    { id: "super_mythic", name: "Super Mythic", color: "#e3112f", income: "$600K/s", fry: "50 min",     sell: "$18M"  },
+    { id: "ultra_mythic", name: "Ultra Mythic", color: "#e423c8", income: "$3M/s",   fry: "1 h 45 min", sell: "$90M"  },
+    { id: "godly",        name: "Godly",        color: "#f4e2b0", income: "$15M/s",  fry: "4 h",        sell: "$450M" },
   ];
+  const PRISMATIC = { id: "prismatic", name: "Prismatic", color: "#ff7af5", special: true };
+  const byName = Object.fromEntries(RARITIES.map(r => [r.name, r]));
+
+  // the lane: workers' speed and the two most common nuggets of every biome
+  const BIOMES = [
+    ["Forest", 20, "Common", "Uncommon"], ["Desert", 5e3, "Common", "Uncommon"], ["Snow", 1e4, "Uncommon", "Common"],
+    ["Vulcano", 2e4, "Uncommon", "Common"], ["Ocean", 4e4, "Uncommon", "Rare"], ["Candy", 8e4, "Uncommon", "Rare"],
+    ["Crystal", 1.6e5, "Rare", "Uncommon"], ["Space", 3.2e5, "Rare", "Super Rare"], ["Jungle", 6.4e5, "Rare", "Super Rare"],
+    ["Swamp", 1.28e6, "Super Rare", "Rare"], ["Farmland", 3.01e6, "Super Rare", "Rare"], ["Autumn", 1.03e7, "Super Rare", "Epic"],
+    ["Sakura", 4.12e7, "Super Rare", "Epic"], ["Beach", 1.63e8, "Epic", "Super Rare"], ["Canyon", 6.48e8, "Epic", "Legendary"],
+    ["Mushroom", 2.57e9, "Epic", "Legendary"], ["Graveyard", 1.02e10, "Legendary", "Epic"], ["Pirate", 4.05e10, "Legendary", "Epic"],
+    ["Castle", 1.6e11, "Legendary", "Mythic"], ["Toyland", 6.37e11, "Legendary", "Mythic"], ["Steampunk", 2.52e12, "Mythic", "Legendary"],
+    ["Toxic", 1e13, "Mythic", "Super Mythic"], ["Cyber", 3.98e13, "Mythic", "Super Mythic"], ["Dino", 1.58e14, "Super Mythic", "Mythic"],
+    ["Fairy", 6.26e14, "Super Mythic", "Mythic"], ["Cloud", 2.48e15, "Super Mythic", "Ultra Mythic"], ["Rainbow", 9.86e15, "Super Mythic", "Ultra Mythic"],
+    ["Royal", 3.91e16, "Ultra Mythic", "Super Mythic"], ["Galaxy", 1.55e17, "Ultra Mythic", "Godly"], ["Heaven", 6.16e17, "Ultra Mythic", "Godly"],
+  ].map(([name, speed, a, b]) => ({ name, speed, common: [a, b] }));
+
+  // big numbers the way the game writes them: K, M, B, T, Qd
+  function short(n) {
+    const u = [[1e15, "Qd"], [1e12, "T"], [1e9, "B"], [1e6, "M"], [1e3, "K"]];
+    for (const [v, s] of u) if (n >= v) { const x = n / v; return (x >= 100 ? Math.round(x) : +x.toPrecision(3)) + s; }
+    return String(Math.round(n));
+  }
 
   const MUTATIONS = {
-    electric: { name: "Electric", color: "#ffe23d", img: "golden",
-      desc: "Lightning cracks over the biome. Nuggets come out buzzing with static and won't stop sparking." },
-    candy:    { name: "Candy",    color: "#ff7ab8", img: "candy",
-      desc: "Sprinkles pour from a pink sky. Nuggets get a sugar-glass crust that crunches like hard candy." },
-    frost:    { name: "Frost",    color: "#a9dcff", img: "frost",
-      desc: "Snow drifts over the counters. Nuggets freeze into clear ice crystal, still crispy inside." },
-    toxic:    { name: "Toxic",    color: "#a6f22a", img: "toxic",
-      desc: "Green drops sizzle on the floor. Nuggets glow neon and leave a faint cloud wherever you carry them." },
-    lava:     { name: "Lava",     color: "#ff5a17", img: "lava",
-      desc: "Molten drops fall from a red sky. Nuggets come out cracked and glowing like they never stopped cooking." },
-    chrome:   { name: "Chrome",   color: "#d9dde3", img: "godly",
-      desc: "Mirror shards glint in the air. Nuggets turn polished silver and reflect the whole lane." },
-    void:     { name: "Void",     color: "#7a4dff", img: "void",
-      desc: "Light bends into a swirling hole. Nuggets come out deep purple, as if they swallowed the dark." },
-    cosmic:   { name: "Cosmic",   color: "#c05bff", img: "cosmic",
-      desc: "Shooting stars streak across the biome. Nuggets fill with a tiny galaxy that slowly turns." },
+    electric: { name: "Electric", rain: "Thunder Rain", color: "#4fc8ff", img: "electric", x: 5,  chance: 25, strike: "Lightning", fx: "Electricity crackles around it.",
+      desc: "Lightning strikes one nugget in the biome 3–7 seconds after the rain starts and turns it into a blue Electric Nugget that keeps crackling. While it rains, new nuggets there can turn Electric too." },
+    candy:   { name: "Candy",   rain: "Candy Rain",   color: "#ff7ab8", img: "candy",   x: 6,  chance: 18, strike: "A giant candy", fx: "Candies circle it with sweet tails, sprinkles fall off it.",
+      desc: "A giant candy strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Candy too." },
+    frost:   { name: "Frost",   rain: "Frost Rain",   color: "#a9dcff", img: "frost",   x: 8,  chance: 15, strike: "An icicle", fx: "Ice crystals grow out of it and shatter, with snowflakes and cold mist.",
+      desc: "An icicle strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Frost too." },
+    toxic:   { name: "Toxic",   rain: "Toxic Rain",   color: "#a6f22a", img: "toxic",   x: 10, chance: 12, strike: "Goo", fx: "Slime bubbles swell up and pop, goo drips off it, rings of poison.",
+      desc: "Goo strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Toxic too." },
+    lava:    { name: "Lava",    rain: "Lava Rain",    color: "#ff5a17", img: "lava",    x: 12, chance: 10, strike: "A meteor", fx: "Flames, embers and blobs of lava that pop off and splash, with a flickering glow.",
+      desc: "A meteor strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Lava too." },
+    chrome:  { name: "Chrome",  rain: "Chrome Rain",  color: "#d9dde3", img: "chrome",  x: 15, chance: 8,  strike: "A chrome ball", fx: "Star glints, a shine that flashes over it, steel balls circling it.",
+      desc: "A chrome ball strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Chrome too." },
+    diamond: { name: "Diamond", rain: "Diamond Rain", color: "#9fe8ff", img: "diamond", x: 20, chance: 6,  strike: "A diamond", fx: "Rays of light turn behind it, rainbow glints, little diamonds circle it.",
+      desc: "A diamond strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Diamond too." },
+    void:    { name: "Void",    rain: "Void Rain",    color: "#7a4dff", img: "void",    x: 30, chance: 4,  strike: "A dark portal", fx: "A black hole with a purple vortex behind it, specks get sucked in, dark smoke.",
+      desc: "A dark portal strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Void too." },
+    cosmic:  { name: "Cosmic",  rain: "Cosmic Rain",  color: "#c05bff", img: "cosmic",  x: 50, chance: 2,  strike: "A shooting star", fx: "Little planets circle it (one with a ring), stars twinkle, cosmic dust.",
+      desc: "A shooting star strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Cosmic too." },
   };
-  const MUTATION_CHANCE = 0.12; // demo value
 
   /* =========================================================
      SOUND (generated with Web Audio, only after a click)
@@ -466,13 +491,17 @@
       legendary:    { c: "#ff8d14", r: .18, m: .35, cc: 1, e: "#6a2400", rim: "#ffd27a" },
       mythic:       { c: "#ff2f6a", r: .14, m: .25, cc: 1, e: "#6a0020", rim: "#ff9cbc" },
       super_mythic: { c: "#d60f2c", r: .12, m: .3,  cc: 1, e: "#5a000e", rim: "#ff6a6a" },
+      ultra_mythic: { c: "#e423c8", r: .12, m: .3,  cc: 1, e: "#4a0040", rim: "#ff8cf0" },
+      godly:        { c: "#f4e6c0", r: .08, m: .55, cc: 1, e: "#2a2010", rim: "#fff3c4" },
       prismatic:    { c: "#ffffff", r: .1,  m: .15, cc: 1, e: "#1a0a26", rim: "#ff7af5", prism: true },
     };
     const targetCol = new T.Color(), targetEm = new T.Color(), WHITE = new T.Color(1, 1, 1);
-    let curIdx = RARITIES.length - 1, prism = true;
+    // the 10 rarities, then the Prismatic special nugget (where the hero starts)
+    const LOOKS = [...RARITIES, PRISMATIC];
+    let curIdx = LOOKS.length - 1, prism = true;
     const label = $("#hvLabel"), nameEl = $("#hvName"), tierEl = $("#hvTier");
     function apply(idx, instant) {
-      const r = RARITIES[idx], L = LOOK[r.id];
+      const r = LOOKS[idx], L = LOOK[r.id];
       prism = !!L.prism;
       targetCol.set(L.c).convertSRGBToLinear();
       targetEm.set(L.e).convertSRGBToLinear();
@@ -485,7 +514,7 @@
       wrap.style.setProperty("--hv", r.color);
       wrap.classList.toggle("is-prism", prism);
       nameEl.textContent = r.name;
-      tierEl.textContent = `Tier ${idx + 1} / 9`;
+      tierEl.textContent = r.special ? "Special" : `Tier ${idx + 1} / 10`;
       restart(label, "swap");
     }
     apply(curIdx, true);
@@ -499,13 +528,13 @@
     let dragging = false, lastX = 0, dragDist = 0;
 
     function reroll(user) {
-      curIdx = (curIdx + 1) % RARITIES.length;
+      curIdx = (curIdx + 1) % LOOKS.length;
       spinBoost = .45; flash = 1; sq = .28; sqV = 0;
       apply(curIdx);
       if (user) Sound.pop(curIdx);
       if (!reduceMotion && (user || !lite)) {
         const r = cv.getBoundingClientRect();
-        const c = RARITIES[curIdx].id === "prismatic" ? RAINBOW : [RARITIES[curIdx].color, "#fff0d4"];
+        const c = LOOKS[curIdx].special ? RAINBOW : [LOOKS[curIdx].color, "#fff0d4"];
         crumbs(r.left + r.width / 2, r.top + r.height * .45, c, 16, r.width * .4);
       }
     }
@@ -597,7 +626,7 @@
       if (prism && (!lite || half || (frameNo++ & 1) === 0)) paint(true, t);
 
       sparkleGroup.rotation.y = t * .15;
-      const tierBoost = 1 + curIdx / 9;
+      const tierBoost = 1 + curIdx / 10;
       for (const s of sparkles) {
         const u = s.userData, tw = Math.max(0, Math.sin(t * u.sp + u.ph));
         s.scale.setScalar(u.base * tw * tw * tw * tierBoost + .001);
@@ -642,54 +671,52 @@
   })();
 
   /* =========================================================
-     FRYER
+     FRYER (demo): pick the biome you stole from, fry, see what it was
      ========================================================= */
   const fryBtn = $("#fryBtn"), fryer = $("#fryerBox"), result = $("#result"), burst = $("#burst");
   const oilTemp = $("#oilTemp"), pullCount = $("#pullCount"), bestPull = $("#bestPull"), history = $("#history");
   const pullFlash = $("#pullFlash"), pullFlashText = $("#pullFlashText");
-  let pulls = 0, best = -1;
+  const biomeSel = $("#biomeSel");
+  let pulls = 0, best = -1, biome = BIOMES[0];
+  // demo odds: the biome's most common nugget 2 out of 3 times, its second most common 1 out of 3
+  const DEMO_ODDS = [2 / 3, 1 / 3];
 
-  const total = RARITIES.reduce((s, r) => s + r.odds, 0);
-  const oddsBar = $("#oddsBar");
-  if (oddsBar) {
-    RARITIES.forEach(r => {
-      const s = document.createElement("span");
-      s.style.width = (r.odds / total * 100) + "%";
-      s.style.setProperty("--c", r.color);
-      s.title = `${r.name}: ${r.odds}%`;
-      oddsBar.appendChild(s);
-    });
-    const legend = document.createElement("ul");
-    legend.className = "odds-legend";
-    legend.innerHTML = RARITIES.map(r => `<li style="--c:${r.color}">${r.name} ${r.odds}%</li>`).join("");
-    oddsBar.after(legend);
+  function setBiome(i) {
+    biome = BIOMES[Math.max(0, Math.min(BIOMES.length - 1, i))];
+    if (biomeSel) biomeSel.value = String(BIOMES.indexOf(biome));
+    $("#biomeSpd").textContent = short(biome.speed);
+    $("#oddsBiome").textContent = biome.name;
+    const bar = $("#oddsBar"), legend = $("#oddsLegend");
+    if (bar && legend) {
+      bar.innerHTML = biome.common.map((n, k) => `<span style="width:${DEMO_ODDS[k] * 100}%;--c:${byName[n].color}" title="${n}"></span>`).join("");
+      legend.innerHTML = biome.common.map((n, k) => `<li style="--c:${byName[n].color}">${n} ${Math.round(DEMO_ODDS[k] * 100)}%</li>`).join("");
+    }
+    $("#biomePrev").disabled = BIOMES.indexOf(biome) === 0;
+    $("#biomeNext").disabled = BIOMES.indexOf(biome) === BIOMES.length - 1;
+  }
+  if (biomeSel) {
+    biomeSel.innerHTML = BIOMES.map((b, i) => `<option value="${i}">${i + 1}. ${b.name}</option>`).join("");
+    biomeSel.addEventListener("change", () => setBiome(+biomeSel.value));
+    $("#biomePrev")?.addEventListener("click", () => { setBiome(BIOMES.indexOf(biome) - 1); Sound.pop(2); });
+    $("#biomeNext")?.addEventListener("click", () => { setBiome(BIOMES.indexOf(biome) + 1); Sound.pop(4); });
+    setBiome(0);
   }
 
-  function roll() {
-    let n = Math.random() * total;
-    for (const r of RARITIES) { n -= r.odds; if (n <= 0) return r; }
-    return RARITIES[0];
-  }
+  const roll = () => byName[biome.common[Math.random() < DEMO_ODDS[0] ? 0 : 1]];
 
-  function setResult(r, mutKey) {
+  function setResult(r) {
     const tier = RARITIES.indexOf(r) + 1;
     result.dataset.rarity = r.id;
     result.style.setProperty("--rc", r.color);
     $("#resultImg").src = `${r.id}.webp`;
     $("#resultImg").alt = `${r.name} nugget`;
     $("#resultName").textContent = r.name;
-    $("#resultTier").textContent = `Tier ${tier} / 9`;
+    $("#resultTier").textContent = `Tier ${tier} / 10`;
     $("#resultStars").innerHTML = RARITIES.map((_, i) => `<i class="${i < tier ? "" : "off"}" style="animation-delay:${.4 + i * .05}s"></i>`).join("");
-    const mut = $("#resultMut");
-    if (mutKey) {
-      const m = MUTATIONS[mutKey];
-      mut.hidden = false; mut.textContent = m.name;
-      mut.style.setProperty("--mc", m.color);
-      mut.style.animation = "none"; void mut.offsetWidth; mut.style.animation = "";
-    } else mut.hidden = true;
+    $("#resultStats").innerHTML = `<span><small>Income</small>${r.income}</span><span><small>Fries</small>${r.fry}</span><span><small>Sells</small>${r.sell}</span>`;
   }
 
-  function doBurst(color, big, prismatic) {
+  function doBurst(color, big) {
     if (reduceMotion) return;
     burst.innerHTML = "";
     const n = big ? 30 : 16;
@@ -697,7 +724,7 @@
       const p = document.createElement("i");
       p.style.setProperty("--r", (360 / n * i + rand(-8, 8)) + "deg");
       p.style.setProperty("--dist", (big ? rand(-280, -190) : rand(-190, -130)) + "px");
-      p.style.setProperty("--c", prismatic ? RAINBOW[i % RAINBOW.length] : (i % 3 === 0 ? "#fff0d4" : color));
+      p.style.setProperty("--c", i % 3 === 0 ? "#fff0d4" : color);
       p.style.animationDelay = rand(0, .1) + "s";
       burst.appendChild(p);
     }
@@ -706,7 +733,7 @@
   function bigPull(r) {
     if (reduceMotion || !pullFlash) return;
     pullFlash.style.setProperty("--pf", r.color);
-    pullFlash.classList.toggle("prism", r.id === "prismatic");
+    pullFlash.classList.remove("prism");
     pullFlashText.textContent = r.name + "!";
     restart(pullFlash, "on");
   }
@@ -727,16 +754,15 @@
 
     const tempI = setInterval(() => { oilTemp.textContent = 180 + Math.round(rand(-6, 14)); }, 120);
     const r = roll();
-    const mutKey = Math.random() < MUTATION_CHANCE ? Object.keys(MUTATIONS)[Math.floor(Math.random() * 8)] : null;
 
     setTimeout(() => {
       clearInterval(tempI); oilTemp.textContent = 180;
       fryer.classList.remove("frying");
-      setResult(r, mutKey);
+      setResult(r);
       result.classList.remove("flipping");
       result.classList.add("flipped");
       const tier = RARITIES.indexOf(r);
-      doBurst(r.color, tier >= 6, r.id === "prismatic");
+      doBurst(r.color, tier >= 6);
       Sound.reveal(tier);
       if (tier >= 6) { bigPull(r); if (!reduceMotion) restart(result, "shake"); }
 
@@ -745,7 +771,7 @@
       const empty = $(".empty", history); if (empty) empty.remove();
       const li = document.createElement("li");
       li.style.setProperty("--rc", r.color);
-      li.title = r.name + (mutKey ? ` · ${MUTATIONS[mutKey].name}` : "");
+      li.title = `${r.name} · ${biome.name}`;
       li.innerHTML = `<img src="${r.id}.webp" alt="${li.title}">`;
       history.prepend(li);
       while (history.children.length > 8) history.lastElementChild.remove();
@@ -758,9 +784,9 @@
   /* =========================================================
      RARITIES: holo cards
      ========================================================= */
-  $$(".hcard").forEach((c, i) => {
-    const gems = $(".hc-gems", c);
-    if (gems) gems.innerHTML = Array.from({ length: 9 }, (_, k) => `<i class="${k <= i ? "" : "off"}"></i>`).join("");
+  $$(".hc-gems[data-tier]").forEach(g => {
+    const t = +g.dataset.tier;
+    g.innerHTML = Array.from({ length: 10 }, (_, k) => `<i class="${k < t ? "" : "off"}"></i>`).join("");
   });
   // tilt + glare that follows the mouse (rarity cards and the mutation card)
   if (canHover && !reduceMotion) $$(".hcard, .mut-card").forEach(c => {
@@ -811,9 +837,13 @@
       rainType = key;
       rainsSec.dataset.rain = key;
       img.src = pre.src; img.alt = `${m.name} mutation nugget`;
-      $("#rainTitle").textContent = `${m.name} Rain`;
+      $("#rainTitle").textContent = m.rain;
       name.textContent = `${m.name} Mutation`;
       $("#rainDesc").textContent = m.desc;
+      $("#rainX").textContent = `x${m.x}`;
+      $("#rainChance").textContent = `${m.chance}% of rains`;
+      $("#rainStrike").textContent = m.strike;
+      $("#rainFx").textContent = m.fx;
       [img, name].forEach(el => restart(el, "swap"));
       resetRain();
     });
@@ -839,6 +869,11 @@
     g.addColorStop(0, "rgba(255,230,120,1)"); g.addColorStop(.4, "rgba(255,90,23,.9)"); g.addColorStop(1, "rgba(255,40,0,0)");
     x.fillStyle = g; x.fillRect(0, 0, s, s);
   });
+  const chromeSprite = sprite(64, (x, s) => {
+    const g = x.createRadialGradient(s * .36, s * .34, 1, s / 2, s / 2, s / 2);
+    g.addColorStop(0, "#ffffff"); g.addColorStop(.25, "#e9edf2"); g.addColorStop(.6, "#8d96a3"); g.addColorStop(.9, "#3b414a"); g.addColorStop(1, "rgba(59,65,74,0)");
+    x.fillStyle = g; x.beginPath(); x.arc(s / 2, s / 2, s / 2, 0, 6.29); x.fill();
+  });
   const glintSprite = sprite(64, (x, s) => {
     const g = x.createLinearGradient(0, 0, s, 0);
     g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, "rgba(240,244,250,1)"); g.addColorStop(1, "rgba(255,255,255,0)");
@@ -857,21 +892,22 @@
     if (t === "candy") Object.assign(d, { vy: rand(2, 4), vx: rand(-.6, .6), r: rand(3, 6), c: ["#ff7ab8", "#ffe36e", "#7fe7ff", "#ffffff", "#b38cff"][Math.floor(rand(0, 5))] });
     if (t === "toxic") Object.assign(d, { vy: rand(3, 6), vx: 0, r: rand(2, 4.5) });
     if (t === "electric") Object.assign(d, { vy: rand(6, 11), vx: rand(-1, 1), r: rand(1, 2) });
-    if (t === "chrome") Object.assign(d, { vy: rand(4, 8), vx: rand(1.5, 3), r: rand(6, 16) });
+    if (t === "chrome") Object.assign(d, { vy: rand(2.5, 5), vx: rand(-.3, .3), r: rand(4, 9) });
+    if (t === "diamond") Object.assign(d, { vy: rand(1.6, 3.4), vx: rand(-.4, .4), r: rand(4, 9) });
     if (t === "void") { const a = rand(0, 6.28), dist = initial ? rand(40, Math.max(rw, rh) * .6) : Math.max(rw, rh) * .6; Object.assign(d, { a, dist, r: rand(1.5, 4), vy: 0, vx: 0 }); }
     if (t === "cosmic") Object.assign(d, { vy: 0, vx: 0, r: rand(.8, 2.6), y: rand(0, rh), shoot: Math.random() < .04 });
     return d;
   }
   function resetRain() {
     if (!rctx) return;
-    const count = { lava: 90, frost: 110, candy: 120, toxic: 120, electric: 140, chrome: 60, void: 160, cosmic: 160 }[rainType];
+    const count = { electric: 140, candy: 120, frost: 110, toxic: 120, lava: 90, chrome: 55, diamond: 70, void: 160, cosmic: 160 }[rainType];
     const scale = (Math.min(1, rw / 1100) * .7 + .3) * (lite ? .55 : 1);
     drops = Array.from({ length: Math.round(count * scale) }, () => makeDrop(true));
     if (reduceMotion) drawRain();
   }
   function drawBolt(ctx, x, a) {
     ctx.save();
-    ctx.strokeStyle = `rgba(255,250,200,${a})`; ctx.lineWidth = 3; ctx.shadowColor = "#ffe23d"; ctx.shadowBlur = 20;
+    ctx.strokeStyle = `rgba(225,245,255,${a})`; ctx.lineWidth = 3; ctx.shadowColor = "#4fc8ff"; ctx.shadowBlur = 20;
     ctx.beginPath(); let y = 0; ctx.moveTo(x, y);
     while (y < rh * .7) { y += rand(20, 50); x += rand(-30, 30); ctx.lineTo(x, y); }
     ctx.stroke(); ctx.restore();
@@ -882,7 +918,7 @@
     if (t === "electric") {
       if (Math.random() < .012) flashA = 1;
       if (flashA > 0) {
-        ctx.fillStyle = `rgba(255,240,140,${flashA * .18})`; ctx.fillRect(0, 0, rw, rh);
+        ctx.fillStyle = `rgba(150,215,255,${flashA * .18})`; ctx.fillRect(0, 0, rw, rh);
         drawBolt(ctx, rand(rw * .1, rw * .9), flashA);
         flashA -= .08 * RM;
       }
@@ -927,13 +963,18 @@
         ctx.fillStyle = "rgba(166,242,42,.85)";
         ctx.beginPath(); ctx.moveTo(0, -d.r * 2.4); ctx.quadraticCurveTo(d.r, -d.r * .2, d.r, d.r * .3); ctx.arc(0, d.r * .3, d.r, 0, Math.PI); ctx.quadraticCurveTo(-d.r, -d.r * .2, 0, -d.r * 2.4); ctx.fill();
       } else if (t === "electric") {
-        ctx.strokeStyle = "rgba(255,226,61,.75)"; ctx.lineWidth = d.r;
+        ctx.strokeStyle = "rgba(120,210,255,.75)"; ctx.lineWidth = d.r;
         ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-d.vx * 3, -d.vy * 3); ctx.stroke();
       } else if (t === "chrome") {
-        ctx.rotate(-.5);
-        ctx.globalAlpha = .5 + Math.sin(d.tw * 3) * .4;
-        ctx.drawImage(glintSprite, -d.r, -d.r, d.r * 2, d.r * 2);
-        ctx.globalAlpha = 1;
+        ctx.drawImage(chromeSprite, -d.r, -d.r, d.r * 2, d.r * 2);
+      } else if (t === "diamond") {
+        ctx.rotate(Math.sin(d.tw) * .4);
+        ctx.fillStyle = "rgba(190,240,255,.85)";
+        ctx.beginPath(); ctx.moveTo(0, -d.r); ctx.lineTo(d.r * .7, -d.r * .2); ctx.lineTo(0, d.r * 1.1); ctx.lineTo(-d.r * .7, -d.r * .2); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,.9)";
+        ctx.beginPath(); ctx.moveTo(0, -d.r); ctx.lineTo(d.r * .25, -d.r * .2); ctx.lineTo(-d.r * .25, -d.r * .2); ctx.closePath(); ctx.fill();
+        const a = Math.max(0, Math.sin(d.tw * 3));
+        if (a > .6) { ctx.globalAlpha = a; ctx.drawImage(glintSprite, -d.r * 1.6, -d.r * 1.6, d.r * 3.2, d.r * 3.2); ctx.globalAlpha = 1; }
       }
       ctx.restore();
       if (d.y > rh + 40 || d.x > rw + 60 || d.x < -60) Object.assign(d, makeDrop(false));
@@ -962,37 +1003,51 @@
   }
 
   /* =========================================================
-     TREADMILL / SPEED GATES
+     TREADMILL (time-lapse): speed grows while you hold the button,
+     the gauge and the biome strip use a log scale (24 → 616Qd)
      ========================================================= */
   const trainBtn = $("#trainBtn"), speedVal = $("#speedVal"), needle = $("#needle"), gFill = $("#gaugeFill");
   const tread = $("#treadmill"), gates = $$("#gates li");
-  const BASE = 16, MAX = 120;
-  let speed = BASE, holding = false;
+  const reachName = $("#reachName"), reachNext = $("#reachNext");
+  const BASE = 24, MAX = 7e17, LMIN = Math.log(BASE), LMAX = Math.log(MAX);
+  let speed = BASE, holding = false, lastT = 0, reachIdx = -1;
   function renderSpeed() {
-    const p = speed / MAX;
-    speedVal.textContent = Math.round(speed);
+    const p = (Math.log(speed) - LMIN) / (LMAX - LMIN);
+    speedVal.textContent = short(speed);
     needle.style.transform = `rotate(${-90 + p * 180}deg)`;
     gFill.style.strokeDashoffset = 283 - 283 * p;
     gFill.style.stroke = p > .8 ? "var(--ketchup)" : "var(--mustard)";
-    tread.style.setProperty("--spd", p.toFixed(3));
-    tread.classList.toggle("fast", p > .45);
-    gates.forEach(g => {
-      const open = speed >= +g.dataset.min;
+    tread.style.setProperty("--spd", Math.max(.15, p).toFixed(3));
+    tread.classList.toggle("fast", holding);
+    let reach = -1;
+    gates.forEach((g, i) => {
+      // you need to be faster than a biome's workers to get away with its nuggets
+      const open = speed > +g.dataset.min;
+      if (open) reach = i;
       if (open && !g.classList.contains("open")) {
         g.classList.add("open", "just");
-        if (holding) Sound.unlock();
         setTimeout(() => g.classList.remove("just"), 700);
       }
       if (!open) g.classList.remove("open");
     });
+    if (reach !== reachIdx) {
+      if (reach > reachIdx && holding) Sound.unlock();
+      reachIdx = reach;
+      const b = BIOMES[reach], n = BIOMES[reach + 1];
+      reachName.textContent = b ? `${reach + 1}. ${b.name}` : "None yet";
+      reachNext.textContent = n ? `Next: ${n.name}, workers at ${short(n.speed)}` : "Every biome is open. Heaven is yours.";
+    }
   }
-  function trainLoop() {
-    if (holding) speed = Math.min(MAX, speed + .45);
+  function trainLoop(now) {
+    if (!holding) return;
+    const dt = lastT ? Math.min(.1, (now - lastT) / 1000) : 0;
+    lastT = now;
+    speed = Math.min(MAX, speed * Math.exp(2.1 * dt));
     renderSpeed();
-    if (holding) requestAnimationFrame(trainLoop);
+    requestAnimationFrame(trainLoop);
   }
-  const startTrain = e => { e.preventDefault(); if (holding) return; holding = true; trainBtn.classList.add("held"); trainLoop(); };
-  const stopTrain = () => { holding = false; trainBtn.classList.remove("held"); };
+  const startTrain = e => { e.preventDefault(); if (holding) return; holding = true; lastT = 0; trainBtn.classList.add("held"); requestAnimationFrame(trainLoop); };
+  const stopTrain = () => { holding = false; trainBtn.classList.remove("held"); renderSpeed(); };
   trainBtn?.addEventListener("pointerdown", startTrain);
   ["pointerup", "pointerleave", "pointercancel"].forEach(ev => trainBtn?.addEventListener(ev, stopTrain));
   trainBtn?.addEventListener("keydown", e => { if ((e.key === " " || e.key === "Enter") && !e.repeat) startTrain(e); });
@@ -1018,47 +1073,55 @@
   });
 
   /* =========================================================
-     BOSSES: rotation timer + click-to-attack mini game
-     Bosses swap every 4 hours, anchored to midnight UTC:
-     00–04 Nugget King, 04–08 Lava Dragon, 08–12 Nugget King, …
-     Change ANCHOR_UTC_HOUR if the real rotation starts at another hour.
+     BOSSES: battle timer + hold-to-swing mini game
+     A Boss Battle starts every 4 hours: Nugget King at 00, 08, 16 UTC,
+     Lava Dragon at 04, 12, 20 UTC. The portal stays open for 60 s and a
+     fight lasts up to 8 minutes after that.
      ========================================================= */
-  const ANCHOR_UTC_HOUR = 0, BLOCK = 4 * 3600 * 1000;
-  const bossTimer = $("#bossTimer"), king = $("#bossKing"), dragon = $("#bossDragon");
+  const BLOCK = 4 * 3600 * 1000, PORTAL = 60 * 1000, FIGHT = PORTAL + 8 * 60 * 1000;
+  const BOSS_NAMES = ["Nugget King", "Lava Dragon"];
+  const bossNow = (t = Date.now()) => { const idx = Math.floor(t / BLOCK); return { idx, since: t - idx * BLOCK, cur: idx % 2 }; };
+  const bossTimer = $("#bossTimer"), bossLabel = $("#bossClockLabel"), king = $("#bossKing"), dragon = $("#bossDragon");
+  const hms = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return [Math.floor(s / 3600), Math.floor(s % 3600 / 60), s % 60].map(n => String(n).padStart(2, "0")).join(":"); };
   function tickBoss() {
-    const now = Date.now() - ANCHOR_UTC_HOUR * 3600 * 1000;
-    const idx = Math.floor(now / BLOCK), left = BLOCK - (now % BLOCK);
-    const live = idx % 2 === 0 ? king : dragon, other = live === king ? dragon : king;
-    live.classList.add("live"); other.classList.remove("live");
-    $(".boss-state", live).textContent = "Live now";
-    $(".boss-state", other).textContent = "Up next";
-    const s = Math.floor(left / 1000);
-    bossTimer.textContent = [Math.floor(s / 3600), Math.floor(s % 3600 / 60), s % 60].map(n => String(n).padStart(2, "0")).join(":");
+    const { since, cur } = bossNow(), cards = [king, dragon];
+    const inPortal = since < PORTAL, inFight = since < FIGHT;
+    const focus = inFight ? cur : 1 - cur;
+    cards.forEach((c, i) => {
+      c.classList.toggle("live", i === focus);
+      $(".boss-state", c).textContent = i === focus ? (inPortal ? "Portal open" : inFight ? "Battle on" : "Up next") : (inFight ? "Up next" : "After that");
+    });
+    if (inPortal) { bossLabel.textContent = `${BOSS_NAMES[cur]} portal closes in`; bossTimer.textContent = hms(PORTAL - since); }
+    else { bossLabel.textContent = `${BOSS_NAMES[1 - cur]} in`; bossTimer.textContent = hms(BLOCK - since); }
   }
   if (bossTimer) { tickBoss(); setInterval(tickBoss, 1000); }
 
   $$(".boss").forEach(b => {
-    const max = +b.dataset.hp; let hp = max;
+    const max = +b.dataset.hp; let hp = max, hits = 0, dizzyUntil = 0, rep = 0, px = 0, py = 0;
     const n = $(".hp-n", b), art = $(".boss-art", b), win = $(".boss-win", b);
     const render = () => { b.style.setProperty("--hp", (hp / max).toFixed(4)); n.textContent = hp.toLocaleString("en-US"); };
-    art.addEventListener("click", e => {
-      if (hp <= 0) return;
-      const crit = Math.random() < .18;
-      const dmg = Math.round(rand(60, 140) * (crit ? 2.5 : 1));
-      hp = Math.max(0, hp - dmg); render();
-      const r = b.getBoundingClientRect();
-      const ar = art.getBoundingClientRect();
-      const cx = e.clientX || ar.left + ar.width / 2, cy = e.clientY || ar.top + ar.height / 2;
+    function hit() {
+      if (hp <= 0) { stop(); return; }
+      const now = performance.now();
+      // the Spatula: 12 damage, 15% critical hits (double), double damage while he's dizzy
+      const crit = Math.random() < .15, dizzy = now < dizzyUntil;
+      const dmg = 12 * (crit ? 2 : 1) * (dizzy ? 2 : 1);
+      hp = Math.max(0, hp - dmg); hits++; render();
+      const r = b.getBoundingClientRect(), ar = art.getBoundingClientRect();
+      const cx = px || ar.left + ar.width / 2, cy = py || ar.top + ar.height / 2;
       const d = document.createElement("span");
-      d.className = "dmg" + (crit ? " crit" : "");
+      d.className = "dmg" + (crit ? " crit" : "") + (dizzy ? " dz" : "");
       d.textContent = (crit ? "CRIT -" : "-") + dmg;
-      d.style.left = (cx - r.left) + "px"; d.style.top = (cy - r.top) + "px";
+      d.style.left = (cx - r.left + rand(-30, 30)) + "px"; d.style.top = (cy - r.top + rand(-20, 10)) + "px";
       d.style.setProperty("--dx", rand(-50, 50) + "px");
       b.appendChild(d); d.addEventListener("animationend", () => d.remove());
       restart(b, "hit");
-      Sound.hit(crit);
-      crumbs(cx, cy, b === dragon ? ["#ff5a17", "#ffc72c"] : ["#ffc72c", "#fff0d4"], crit ? 12 : 6, crit ? 110 : 70);
+      if (crit || hits % 2) Sound.hit(crit);
+      if (crit) crumbs(cx, cy, b === dragon ? ["#ff5a17", "#ffc72c"] : ["#ffc72c", "#fff0d4"], 8, 90);
+      // every so often he lands a move that leaves him dizzy (Royal Leap / Tail Swing)
+      if (hits % 30 === 0) { dizzyUntil = now + 3000; b.classList.add("dizzy-on"); clearTimeout(b._dz); b._dz = setTimeout(() => b.classList.remove("dizzy-on"), 3000); }
       if (hp === 0) {
+        stop();
         setTimeout(() => {
           win.hidden = false; Sound.win();
           const wr = b.getBoundingClientRect();
@@ -1066,8 +1129,19 @@
           $(".boss-again", b).focus({ preventScroll: true });
         }, 350);
       }
+    }
+    // hold to keep swinging (about 7 swings a second), or just tap
+    function stop() { clearInterval(rep); rep = 0; b.classList.remove("swinging"); }
+    art.addEventListener("pointerdown", e => {
+      if (hp <= 0 || rep) return;
+      px = e.clientX; py = e.clientY;
+      b.classList.add("swinging"); hit();
+      rep = setInterval(hit, 145);
     });
-    $(".boss-again", b).addEventListener("click", () => { hp = max; render(); win.hidden = true; art.focus({ preventScroll: true }); });
+    art.addEventListener("pointermove", e => { if (rep) { px = e.clientX; py = e.clientY; } });
+    ["pointerup", "pointerleave", "pointercancel"].forEach(ev => art.addEventListener(ev, stop));
+    art.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); px = py = 0; hit(); } });
+    $(".boss-again", b).addEventListener("click", () => { hp = max; hits = 0; dizzyUntil = 0; render(); win.hidden = true; art.focus({ preventScroll: true }); });
     render();
   });
 
@@ -1185,7 +1259,7 @@
     else whileVisible(gateTrack, t => { const c = t % 6.5; setP(c < 5 ? c / 5 : 1); });
   }
 
-  /* ---------- handbook: upcoming boss rotation (same rule as the timer) ---------- */
+  /* ---------- handbook: upcoming boss battles (same rule as the timer) ---------- */
   (function bossSchedule() {
     const body = $("#schedBody");
     const cards = [$("#gbKing"), $("#gbDragon")];
@@ -1194,16 +1268,16 @@
       { name: "Lava Dragon", reward: "Dragon Nugget", color: "var(--m-lava)" },
     ];
     function render() {
-      const now = Date.now() - ANCHOR_UTC_HOUR * 3600 * 1000;
-      const idx = Math.floor(now / BLOCK);
-      cards.forEach((c, i) => c && c.classList.toggle("live", idx % 2 === i));
+      const { idx, since } = bossNow();
+      const first = since < FIGHT ? idx : idx + 1; // a battle that's still on comes first
+      cards.forEach((c, i) => c && c.classList.toggle("live", first % 2 === i));
       if (!body) return;
       const fmt = new Intl.DateTimeFormat(undefined, { weekday: "short", hour: "2-digit", minute: "2-digit" });
       const rows = [];
       for (let k = 0; k < 7; k++) {
-        const block = idx + k, b = B[block % 2];
-        const start = new Date(block * BLOCK + ANCHOR_UTC_HOUR * 3600 * 1000);
-        rows.push(`<tr class="${k === 0 ? "now" : ""}" style="--bc:${b.color}"><td>${fmt.format(start)}${k === 0 ? '<span class="now-pill">Now</span>' : ""}</td><td><span class="boss-chip">${b.name}</span></td><td>${b.reward}</td></tr>`);
+        const block = first + k, b = B[block % 2];
+        const on = k === 0 && block === idx;
+        rows.push(`<tr class="${k === 0 ? "now" : ""}" style="--bc:${b.color}"><td>${fmt.format(new Date(block * BLOCK))}${on ? '<span class="now-pill">Now</span>' : k === 0 ? '<span class="now-pill next">Next</span>' : ""}</td><td><span class="boss-chip">${b.name}</span></td><td>${b.reward}</td></tr>`);
       }
       body.innerHTML = rows.join("");
     }
