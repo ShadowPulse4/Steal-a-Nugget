@@ -1285,6 +1285,13 @@
     setInterval(render, 30 * 1000);
   })();
 
+  /* ---------- update cards: a soft spotlight follows the mouse ---------- */
+  if (canHover && !reduceMotion) $$(".ncard").forEach(c => c.addEventListener("pointermove", e => {
+    const r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    c.style.setProperty("--my", `${e.clientY - r.top}px`);
+  }));
+
   /* ---------- copyright year ---------- */
   const yr = $("#year"); if (yr) yr.textContent = new Date().getFullYear();
 })();
