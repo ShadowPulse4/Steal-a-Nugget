@@ -44,14 +44,14 @@
   const BIOMES = [
     ["Forest", 20, "Common", "Uncommon"], ["Desert", 5e3, "Common", "Uncommon"], ["Snow", 1e4, "Uncommon", "Common"],
     ["Vulcano", 2e4, "Uncommon", "Common"], ["Ocean", 4e4, "Uncommon", "Rare"], ["Candy", 8e4, "Uncommon", "Rare"],
-    ["Crystal", 1.6e5, "Rare", "Uncommon"], ["Space", 3.2e5, "Rare", "Super Rare"], ["Jungle", 6.4e5, "Rare", "Super Rare"],
-    ["Swamp", 1.28e6, "Super Rare", "Rare"], ["Farmland", 3.01e6, "Super Rare", "Rare"], ["Autumn", 1.03e7, "Super Rare", "Epic"],
-    ["Sakura", 4.12e7, "Super Rare", "Epic"], ["Beach", 1.63e8, "Epic", "Super Rare"], ["Canyon", 6.48e8, "Epic", "Legendary"],
-    ["Mushroom", 2.57e9, "Epic", "Legendary"], ["Graveyard", 1.02e10, "Legendary", "Epic"], ["Pirate", 4.05e10, "Legendary", "Epic"],
-    ["Castle", 1.6e11, "Legendary", "Mythic"], ["Toyland", 6.37e11, "Legendary", "Mythic"], ["Steampunk", 2.52e12, "Mythic", "Legendary"],
-    ["Toxic", 1e13, "Mythic", "Super Mythic"], ["Cyber", 3.98e13, "Mythic", "Super Mythic"], ["Dino", 1.58e14, "Super Mythic", "Mythic"],
-    ["Fairy", 6.26e14, "Super Mythic", "Mythic"], ["Cloud", 2.48e15, "Super Mythic", "Ultra Mythic"], ["Rainbow", 9.86e15, "Super Mythic", "Ultra Mythic"],
-    ["Royal", 3.91e16, "Ultra Mythic", "Super Mythic"], ["Galaxy", 1.55e17, "Ultra Mythic", "Godly"], ["Heaven", 6.16e17, "Ultra Mythic", "Godly"],
+    ["Crystal", 1.6e5, "Rare", "Uncommon"], ["Space", 3.2e5, "Rare", "Super Rare"], ["Jungle", 6.4e5, "Super Rare", "Rare"],
+    ["Swamp", 1.28e6, "Super Rare", "Rare"], ["Farmland", 6e6, "Super Rare", "Epic"], ["Autumn", 2.5e7, "Super Rare", "Epic"],
+    ["Sakura", 2e8, "Super Rare", "Epic"], ["Beach", 5e8, "Epic", "Super Rare"], ["Canyon", 9e8, "Epic", "Legendary"],
+    ["Mushroom", 1.75e9, "Epic", "Legendary"], ["Graveyard", 1.2e10, "Legendary", "Epic"], ["Pirate", 2.4e10, "Legendary", "Epic"],
+    ["Castle", 4e10, "Legendary", "Mythic"], ["Toyland", 2.5e11, "Legendary", "Mythic"], ["Steampunk", 6.5e11, "Mythic", "Legendary"],
+    ["Toxic", 1.1e12, "Mythic", "Super Mythic"], ["Cyber", 2.6e12, "Mythic", "Super Mythic"], ["Dino", 1.6e13, "Super Mythic", "Mythic"],
+    ["Fairy", 3.2e13, "Super Mythic", "Mythic"], ["Cloud", 1.8e14, "Super Mythic", "Ultra Mythic"], ["Rainbow", 7.5e14, "Super Mythic", "Ultra Mythic"],
+    ["Royal", 1.4e15, "Ultra Mythic", "Super Mythic"], ["Galaxy", 2.4e15, "Ultra Mythic", "Godly"], ["Heaven", 3.4e15, "Ultra Mythic", "Godly"],
   ].map(([name, speed, a, b]) => ({ name, speed, common: [a, b] }));
 
   // big numbers the way the game writes them: K, M, B, T, Qd
@@ -1004,12 +1004,12 @@
 
   /* =========================================================
      TREADMILL (time-lapse): speed grows while you hold the button,
-     the gauge and the biome strip use a log scale (24 → 616Qd)
+     the gauge and the biome strip use a log scale (24 → 3.4Qd)
      ========================================================= */
   const trainBtn = $("#trainBtn"), speedVal = $("#speedVal"), needle = $("#needle"), gFill = $("#gaugeFill");
   const tread = $("#treadmill"), gates = $$("#gates li");
   const reachName = $("#reachName"), reachNext = $("#reachNext");
-  const BASE = 24, MAX = 7e17, LMIN = Math.log(BASE), LMAX = Math.log(MAX);
+  const BASE = 24, MAX = 4e15, LMIN = Math.log(BASE), LMAX = Math.log(MAX);
   let speed = BASE, holding = false, lastT = 0, reachIdx = -1;
   function renderSpeed() {
     const p = (Math.log(speed) - LMIN) / (LMAX - LMIN);
