@@ -1074,18 +1074,54 @@
 
   /* =========================================================
      BOSSES: battle timer + hold-to-swing mini game
-     A Boss Battle starts every 4 hours: Nugget King at 00, 08, 16 UTC,
-     Lava Dragon at 04, 12, 20 UTC. The portal stays open for 60 s and a
-     fight lasts up to 8 minutes after that.
+     The timer follows the game's own rule (Config.Boss in the game): a Boss
+     Battle starts every 4 hours on the full UTC hour and the bosses take
+     turns (Nugget King at 00, 08, 16 UTC, Lava Dragon at 04, 12, 20 UTC).
+     The portal is open for 60 s, then comes his intro and up to 8 minutes
+     of fighting. The game servers count in UTC, so this page counts with
+     the clock of GitHub's server (the Date header of this page), not with
+     the clock of this computer or phone, which can be off: the page and the
+     game count down to the same second.
      ========================================================= */
-  const BLOCK = 4 * 3600 * 1000, PORTAL = 60 * 1000, FIGHT = PORTAL + 8 * 60 * 1000;
-  const BOSS_NAMES = ["Nugget King", "Lava Dragon"];
-  const bossNow = (t = Date.now()) => { const idx = Math.floor(t / BLOCK); return { idx, since: t - idx * BLOCK, cur: idx % 2 }; };
+  // (the same numbers as Config.Boss in the game: when one changes there, change it here too)
+  const BOSS = {
+    interval: 4 * 3600, // Config.Boss.Interval (seconds)
+    gather: 60,         // Config.Boss.Gather: the portal is open
+    fightTime: 480,     // Config.Boss.FightTime
+    // Config.Boss.Order; intro: Config.Boss.Intro.Length and Config.Boss.Dragon.Intro.Length
+    order: [{ name: "Nugget King", intro: 16 }, { name: "Lava Dragon", intro: 20.4 }],
+  };
+  const BLOCK = BOSS.interval * 1000, PORTAL = BOSS.gather * 1000;
+  // when the battle of boss `cur` is over at the latest (when nobody beats him sooner)
+  const fightEnd = cur => (BOSS.gather + BOSS.order[cur].intro + BOSS.fightTime) * 1000;
+  const BOSS_NAMES = BOSS.order.map(b => b.name);
+  // the server clock: how far GitHub's clock is from this device's clock (ms)
+  let clockOffset = 0;
+  const serverNow = () => Date.now() + clockOffset;
+  async function syncClock() {
+    try {
+      const t0 = Date.now();
+      const res = await fetch(location.pathname, { method: "HEAD", cache: "no-store" });
+      const t1 = Date.now();
+      const server = Date.parse(res.headers.get("Date") || "");
+      if (isNaN(server)) return;
+      // (the header has whole seconds: half a second more on average, made halfway the request)
+      clockOffset = server + 500 - (t0 + t1) / 2;
+      const sync = $("#bossSync");
+      if (sync) sync.hidden = false;
+      if (typeof tickBoss === "function") tickBoss();
+    } catch (e) { /* offline: this device's clock */ }
+  }
+  syncClock();
+  setInterval(syncClock, 10 * 60 * 1000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) syncClock(); });
+  const bossNow = (t = serverNow()) => { const idx = Math.floor(t / BLOCK); return { idx, since: t - idx * BLOCK, cur: idx % 2 }; };
   const bossTimer = $("#bossTimer"), bossLabel = $("#bossClockLabel"), king = $("#bossKing"), dragon = $("#bossDragon");
   const hms = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return [Math.floor(s / 3600), Math.floor(s % 3600 / 60), s % 60].map(n => String(n).padStart(2, "0")).join(":"); };
   function tickBoss() {
+    if (!bossTimer) return;
     const { since, cur } = bossNow(), cards = [king, dragon];
-    const inPortal = since < PORTAL, inFight = since < FIGHT;
+    const inPortal = since < PORTAL, inFight = since < fightEnd(cur);
     const focus = inFight ? cur : 1 - cur;
     cards.forEach((c, i) => {
       c.classList.toggle("live", i === focus);
@@ -1269,7 +1305,7 @@
     ];
     function render() {
       const { idx, since } = bossNow();
-      const first = since < FIGHT ? idx : idx + 1; // a battle that's still on comes first
+      const first = since < fightEnd(idx % 2) ? idx : idx + 1; // a battle that's still on comes first
       cards.forEach((c, i) => c && c.classList.toggle("live", first % 2 === i));
       if (!body) return;
       const fmt = new Intl.DateTimeFormat(undefined, { weekday: "short", hour: "2-digit", minute: "2-digit" });

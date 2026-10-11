@@ -939,6 +939,9 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 .boss-clock { display: inline-flex; align-items: baseline; gap: .8rem; margin-top: 1.6rem; padding: .7rem 1.2rem; border-radius: 16px; background: var(--crust); border: 1px solid var(--line); }
 .boss-clock span { font-family: var(--f-mono); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .boss-clock b { font-family: var(--f-mono); font-weight: 700; font-size: 1.6rem; color: var(--mustard); font-variant-numeric: tabular-nums; }
+.boss-clock .boss-sync { display: inline-flex; align-items: center; gap: .35rem; font-family: var(--f-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.boss-clock .boss-sync[hidden] { display: none; }
+.boss-clock .boss-sync::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #3fd34c; box-shadow: 0 0 6px #3fd34c; }
 .boss-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: clamp(1rem, 3vw, 2rem); align-items: center; }
 @media (max-width: 820px) {
   .boss-grid { grid-template-columns: 1fr 1fr; position: relative; }
