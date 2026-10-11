@@ -24,7 +24,7 @@
   const rand = (a, b) => a + Math.random() * (b - a);
   const RAINBOW = ["#ff4b2b", "#ffc72c", "#3fd34c", "#1ad6e8", "#a050ff", "#ff3a72"];
 
-  /* ---------- game data (from the game's own settings, 9 Oct 2026) ---------- */
+  /* ---------- game data (from the game's own settings, 11 Oct 2026) ---------- */
   const RARITIES = [
     { id: "common",       name: "Common",       color: "#e8ad45", income: "$200/s",  fry: "30 s",       sell: "$6K"   },
     { id: "uncommon",     name: "Uncommon",     color: "#3fd34c", income: "$500/s",  fry: "45 s",       sell: "$15K"  },
@@ -63,23 +63,23 @@
 
   const MUTATIONS = {
     electric: { name: "Electric", rain: "Thunder Rain", color: "#4a8dff", img: "electric", x: 5,  chance: 25, strike: "Lightning", fx: "Electricity crackles around it.",
-      desc: "Lightning strikes one nugget in the biome 3–7 seconds after the rain starts and turns it into a blue Electric Nugget that keeps crackling. While it rains, new nuggets there can turn Electric too." },
+      desc: "Lightning strikes 2 nuggets in each of the 3 biomes (the first 3–7 seconds after the rain starts, the second 6–12 seconds later) and turns them into blue Electric Nuggets that keep crackling. While it rains, new nuggets there can turn Electric too." },
     candy:   { name: "Candy",   rain: "Candy Rain",   color: "#ff7ab8", img: "candy",   x: 6,  chance: 18, strike: "A giant candy", fx: "Candies circle it with sweet tails, sprinkles fall off it.",
-      desc: "A giant candy strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Candy too." },
+      desc: "A giant candy strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Candy too." },
     frost:   { name: "Frost",   rain: "Frost Rain",   color: "#a9dcff", img: "frost",   x: 8,  chance: 15, strike: "An icicle", fx: "Ice crystals grow out of it and shatter, with snowflakes and cold mist.",
-      desc: "An icicle strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Frost too." },
+      desc: "An icicle strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Frost too." },
     toxic:   { name: "Toxic",   rain: "Toxic Rain",   color: "#a6f22a", img: "toxic",   x: 10, chance: 12, strike: "Goo", fx: "Slime bubbles swell up and pop, goo drips off it, rings of poison.",
-      desc: "Goo strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Toxic too." },
+      desc: "Goo strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Toxic too." },
     lava:    { name: "Lava",    rain: "Lava Rain",    color: "#ff5a17", img: "lava",    x: 12, chance: 10, strike: "A meteor", fx: "Flames, embers and blobs of lava that pop off and splash, with a flickering glow.",
-      desc: "A meteor strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Lava too." },
+      desc: "A meteor strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Lava too." },
     chrome:  { name: "Chrome",  rain: "Chrome Rain",  color: "#d9dde3", img: "chrome",  x: 15, chance: 8,  strike: "A chrome ball", fx: "Star glints, a shine that flashes over it, steel balls circling it.",
-      desc: "A chrome ball strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Chrome too." },
+      desc: "A chrome ball strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Chrome too." },
     diamond: { name: "Diamond", rain: "Diamond Rain", color: "#9fe8ff", img: "diamond", x: 20, chance: 6,  strike: "A diamond", fx: "Rays of light turn behind it, rainbow glints, little diamonds circle it.",
-      desc: "A diamond strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Diamond too." },
+      desc: "A diamond strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Diamond too." },
     void:    { name: "Void",    rain: "Void Rain",    color: "#7a4dff", img: "void",    x: 30, chance: 4,  strike: "A dark portal", fx: "A black hole with a purple vortex behind it, specks get sucked in, dark smoke.",
-      desc: "A dark portal strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Void too." },
+      desc: "A dark portal strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Void too." },
     cosmic:  { name: "Cosmic",  rain: "Cosmic Rain",  color: "#c05bff", img: "cosmic",  x: 50, chance: 2,  strike: "A shooting star", fx: "Little planets circle it (one with a ring), stars twinkle, cosmic dust.",
-      desc: "A shooting star strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Cosmic too." },
+      desc: "A shooting star strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Cosmic too." },
   };
 
   /* =========================================================

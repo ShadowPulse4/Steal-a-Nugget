@@ -244,14 +244,14 @@
             <h4 class="h3">Words you'll see a lot</h4>
             <dl class="glossary">
               <div><dt>Field</dt><dd>The long lane of 30 biomes where you steal nuggets.</dd></div>
-              <div><dt>Counter</dt><dd>Where a raw nugget sits. Every biome has 4 counters and 2 workers.</dd></div>
+              <div><dt>Counter</dt><dd>Where a raw nugget sits. The Forest and the Desert have 7 counters, every other biome has 5. Every biome has 2 workers.</dd></div>
               <div><dt>Safe zone</dt><dd>The hub with all the Plots, behind the red line. Workers stop chasing you and nobody can hit you there.</dd></div>
               <div><dt>Plot</dt><dd>Your base in the hub, with your fryers, your customers and your treadmill in front of it.</dd></div>
               <div><dt>Customer</dt><dd>Comes to your Plot when you take a nugget out of the fryer. Give it a fried nugget and it pays you every second.</dd></div>
               <div><dt>Biome</dt><dd>One of the 30 parts of the lane. The further it is, the faster its workers and the rarer its nuggets.</dd></div>
               <div><dt>Rarity</dt><dd>What a nugget turns out to be in the fryer, from Common to Godly.</dd></div>
               <div><dt>Special nugget</dt><dd>Golden, Prismatic, King and Dragon Nugget. They never roll on a normal counter.</dd></div>
-              <div><dt>Mutation Rain</dt><dd>Every 10 minutes a rain falls on one biome for 30 seconds and can mutate nuggets there.</dd></div>
+              <div><dt>Mutation Rain</dt><dd>Every 10 minutes a rain falls on 3 biomes at once for 30 seconds and can mutate nuggets there.</dd></div>
               <div><dt>Mutation</dt><dd>Comes on top of the rarity and multiplies the income, from x5 to x50.</dd></div>
               <div><dt>The Night</dt><dd>Every 5 minutes everyone in the field goes back to their Plot and every counter gets a new nugget.</dd></div>
               <div><dt>Index</dt><dd>Your nugget collection. Fill a page to claim money and speed.</dd></div>
@@ -276,13 +276,23 @@
               <li><span class="k"><kbd>Jump</kbd></span><span class="kd">Stop running on the treadmill.</span></li>
             </ul>
             <p>On the right of the screen you'll find the <strong>Pets</strong>, <strong>Fryer</strong>, <strong>Nuggets</strong>, <strong>Music</strong> and <strong>Invite</strong> buttons. The <strong>Shop</strong> and the <strong>Index</strong> are on the left.</p>
+            <h4 class="h3">Phone, tablet &amp; controller</h4>
+            <p>On a phone or tablet you tap instead of click, and the game always plays sideways (landscape). With a controller, small button hints on the screen show what each button does:</p>
+            <ul class="keys">
+              <li><span class="k"><kbd>X</kbd><small>hold</small></span><span class="kd">Everything <kbd>E</kbd> does: steal, use machines, give a nugget to a customer. At the sign of your Plot it upgrades your Plot.</span></li>
+              <li><span class="k"><kbd>RT</kbd></span><span class="kd">Put a nugget in a fryer (a ghost shows the spot in front of you), place a Trap, swing the Spatula, train faster on the treadmill.</span></li>
+              <li><span class="k"><kbd>B</kbd></span><span class="kd">Drop your stolen nugget. With a menu open, B closes the menu.</span></li>
+              <li><span class="k"><kbd>Y</kbd></span><span class="kd">Open the inventory.</span></li>
+              <li><span class="k"><kbd>LB</kbd><i>/</i><kbd>RB</kbd></span><span class="kd">The hotbar slot before / after.</span></li>
+              <li><span class="k"><kbd>D-pad</kbd></span><span class="kd">Left Shop, right Index, up Pets, down Fryer.</span></li>
+            </ul>
           </section>
           <section class="chapter" id="ch-lane">
             <header class="ch-head">
               <span class="ch-tag">Chapter 03</span>
               <h3 class="h2 ch-title">The lane &amp; <em>30 biomes</em></h3>
             </header>
-            <p class="big">The field is one long lane. Every biome has 4 counters and 2 workers. The further the biome, the faster its workers and the rarer its nuggets.</p>
+            <p class="big">The field is one long lane. Every biome has 2 workers and 5 counters (the Forest and the Desert have 7). The further the biome, the faster its workers and the rarer its nuggets.</p>
             <figure class="lane3d-fig">
               <div class="lane3d" aria-hidden="true">
                 <div class="l3-floor"><div class="l3-strip">
@@ -315,7 +325,7 @@
                 <div class="l3-safe">Safe zone</div>
                 <span class="l3-tag">The lane</span>
               </div>
-              <figcaption>Every biome has 4 counters and 2 workers, from RFC, R or Nugget King.</figcaption>
+              <figcaption>Every biome has 2 workers, from RFC, R or Nugget King, and 5 counters (7 in the Forest and the Desert).</figcaption>
             </figure>
             <ul class="shops">
               <li class="shop shop-rfc"><span class="shop-sign">RFC</span><p>Workers</p></li>
@@ -361,6 +371,10 @@
                 </tbody>
               </table>
             </div>
+            <div class="callout">
+              <span class="callout-tag">Lucky start</span>
+              <p>The first biomes give you a better shot at a rare nugget. A Super Rare shows up 2.5x as often in the Forest (1.6%), with a bit less extra in every next biome up to Crystal. In the first 4 biomes an Epic has a 0.2–0.56% chance and a Legendary about 0.02%.</p>
+            </div>
             <h4 class="h3">The Night</h4>
             <div class="night" aria-hidden="true"><span class="moon"></span><span class="nb">Field closed · 12</span></div>
             <p>Every 5 minutes night falls. Everyone in the field is sent back to their Plot, every counter gets a new nugget, and a dark barrier keeps the field closed for 12 seconds, with a countdown.</p>
@@ -388,7 +402,8 @@
               <li><b>Hands full.</b> In the field you hold the nugget above your head and can't put it away.</li>
               <li><b>Caught?</b> You're knocked down as a ragdoll for 3 seconds, and the worker carries the nugget back to its counter.</li>
               <li><b>Made it?</b> Once you're over the red line in the safe zone, the nugget is yours for good. Walk into the field with it later and the workers leave you alone.</li>
-              <li><b>Let go.</b> Press <kbd>Q</kbd> or the DROP button to drop your stolen nugget. While a worker is chasing you, that takes 3 seconds.</li>
+              <li><b>Let go.</b> Press <kbd>Q</kbd> or the DROP button (<kbd>B</kbd> on a controller) to drop your stolen nugget. While a worker is chasing you, that takes 3 seconds.</li>
+              <li><b>No swapping.</b> Dropped a nugget yourself? Then you can't grab another one until you've brought the dropped one to the safe zone, someone else has taken it, or the Night has cleared it. A drop from a Bear Trap doesn't count.</li>
             </ul>
 
             <figure class="sizes" aria-hidden="true">
@@ -512,10 +527,10 @@
               <span class="ch-tag">Chapter 09</span>
               <h3 class="h2 ch-title">Rains &amp; <em>mutations</em></h3>
             </header>
-            <p class="big">Every 10 minutes a Mutation Rain falls on one biome for 30 seconds, with a storm sky and its own music. The timer already shows which rain is next and where.</p>
+            <p class="big">Every 10 minutes a Mutation Rain falls on 3 biomes at once for 30 seconds, with a storm sky and its own music. The timer shows which rain is next, and when it starts a banner shows its 3 biomes.</p>
             <ul class="rules">
-              <li><b>The strike.</b> 3–7 seconds after the rain starts, it strikes one nugget in that biome and gives it the rain's mutation. Every rain strikes in its own way: lightning, a giant candy, an icicle, goo, a meteor, a chrome ball, a diamond, a dark portal, a shooting star.</li>
-              <li><b>While it rains.</b> New nuggets in that biome can get the mutation too, at 5x the normal chance (higher in the far biomes). Outside the rains, nuggets never mutate.</li>
+              <li><b>The strikes.</b> The rain strikes twice in each of its 3 biomes: 3–7 seconds after it starts, and again 6–12 seconds later. Every strike gives one nugget the rain's mutation, so that's 6 nuggets every rain. Every rain strikes in its own way: lightning, a giant candy, an icicle, goo, a meteor, a chrome ball, a diamond, a dark portal, a shooting star.</li>
+              <li><b>While it rains.</b> New nuggets in those biomes can get the mutation too, at 5x the normal chance (higher in the far biomes). Outside the rains, nuggets never mutate.</li>
               <li><b>On top of the rarity.</b> A mutation multiplies the income. A Legendary Candy Nugget pays 6x a Legendary.</li>
               <li><b>Bonus for everyone.</b> Every customer eating a mutated nugget also makes <strong>all</strong> your customers pay +10%.</li>
               <li><b>Mutation pets.</b> Frog, Monkey and Hawk can give the rain's mutation to a nugget you fry during a rain.</li>
@@ -561,13 +576,13 @@
             <p>Taking a nugget out of the fryer brings a hungry customer to your Plot (there are 10 different looks). Give it a fried nugget and it walks around, eats it and pays you every second. The rarer the nugget, the taller the customer: 6 studs for a Common one, a 100-stud giant for a Prismatic one.</p>
             <p>You can take a nugget back from a customer or swap it for a better one.</p>
             <h4 class="h3">Plot upgrades</h4>
-            <p>Click the sign on your Plot to upgrade it. You start with room for <strong>6 customers</strong> and end with <strong>50</strong> at the last level (up to 55 with Extra Nugget Slots from the Shop). Level 2 costs $1M, level 3 $75M, then every level costs 1.35x more (the last one about $22.3T). Every upgrade makes your Plot bigger and gives its fence a new look:</p>
+            <p>Click the sign on your Plot to upgrade it (with a controller: hold <kbd>X</kbd> at the sign). You start with room for <strong>6 customers</strong> and end with <strong>50</strong> at the last level (up to 55 with Extra Nugget Slots from the Shop). Level 2 costs $300K and level 3 $534K. After that every level costs about 1.78x more, and from about $5B on 1.35x more (the last one about $13.4T). Every upgrade makes your Plot bigger and gives its fence a new look:</p>
             <ol class="fences"><li style="--fc:#a0682f">Wood</li><li style="--fc:#d9a868">Light wood</li><li style="--fc:#b98cff">Lilac</li><li style="--fc:#9aa1ab">Castle</li><li style="--fc:#ff9b3d">Lanterns</li><li style="--fc:#a9dcff">Ice</li><li style="--fc:#ffc72c">Gold</li><li style="--fc:#ff7ab8">Candy</li><li style="--fc:#ff5a17">Lava</li><li style="--fc:#7a4dff">Galaxy</li></ol>
             <h4 class="h3">Money while you're away</h4>
             <p>Your customers keep paying while you're offline, up to 24 hours. When you come back it waits on your Plot in a glowing circle: walk through it to claim it.</p>
             <div class="callout">
               <span class="callout-tag">Daily Chest</span>
-              <p>Once every 24 hours, the Daily Chest in the hub gives you a random $1K–$500K.</p>
+              <p>Once every 24 hours, the Daily Chest in the hub gives you a random $1K–$200K.</p>
             </div>
           </section>
           <section class="chapter" id="ch-speed">
@@ -683,19 +698,19 @@
               <span class="ch-tag">Chapter 13</span>
               <h3 class="h2 ch-title">The <em>Index</em></h3>
             </header>
-            <p class="big">Find every nugget of a page to claim its reward: money plus speed levels. There are 11 pages with 104 nuggets in total.</p>
+            <p class="big">Find every nugget of a page to claim its reward: money plus just as much speed. There are 11 pages with 104 nuggets in total.</p>
             <ul class="index-pages">
-              <li style="--rc:var(--r-common)"><b>Normal</b><span>All 10 rarities</span><em>$100K <i>+1 Speed</i></em></li>
-              <li style="--rc:var(--r-prismatic)"><b>Special</b><span>Golden, Prismatic, King and Dragon Nugget</span><em>$1B <i>+5 Speed</i></em></li>
-              <li style="--rc:var(--m-electric)"><b>Electric</b><span>All 10 rarities, Electric</span><em>$500M <i>+2 Speed</i></em></li>
-              <li style="--rc:var(--m-candy)"><b>Candy</b><span>All 10 rarities, Candy</span><em>$100M <i>+2 Speed</i></em></li>
-              <li style="--rc:var(--m-frost)"><b>Frost</b><span>All 10 rarities, Frost</span><em>$250M <i>+2 Speed</i></em></li>
-              <li style="--rc:var(--m-toxic)"><b>Toxic</b><span>All 10 rarities, Toxic</span><em>$500M <i>+2 Speed</i></em></li>
-              <li style="--rc:var(--m-lava)"><b>Lava</b><span>All 10 rarities, Lava</span><em>$1B <i>+3 Speed</i></em></li>
-              <li style="--rc:var(--m-chrome)"><b>Chrome</b><span>All 10 rarities, Chrome</span><em>$2.5B <i>+3 Speed</i></em></li>
-              <li style="--rc:var(--m-diamond)"><b>Diamond</b><span>All 10 rarities, Diamond</span><em>$10B <i>+3 Speed</i></em></li>
-              <li style="--rc:var(--m-void)"><b>Void</b><span>All 10 rarities, Void</span><em>$50B <i>+4 Speed</i></em></li>
-              <li style="--rc:var(--m-cosmic)"><b>Cosmic</b><span>All 10 rarities, Cosmic</span><em>$250B <i>+5 Speed</i></em></li>
+              <li style="--rc:var(--r-common)"><b>Normal</b><span>All 10 rarities</span><em>$100K <i>+100K Speed</i></em></li>
+              <li style="--rc:var(--r-prismatic)"><b>Special</b><span>Golden, Prismatic, King and Dragon Nugget</span><em>$1B <i>+1B Speed</i></em></li>
+              <li style="--rc:var(--m-electric)"><b>Electric</b><span>All 10 rarities, Electric</span><em>$500M <i>+500M Speed</i></em></li>
+              <li style="--rc:var(--m-candy)"><b>Candy</b><span>All 10 rarities, Candy</span><em>$100M <i>+100M Speed</i></em></li>
+              <li style="--rc:var(--m-frost)"><b>Frost</b><span>All 10 rarities, Frost</span><em>$250M <i>+250M Speed</i></em></li>
+              <li style="--rc:var(--m-toxic)"><b>Toxic</b><span>All 10 rarities, Toxic</span><em>$500M <i>+500M Speed</i></em></li>
+              <li style="--rc:var(--m-lava)"><b>Lava</b><span>All 10 rarities, Lava</span><em>$1B <i>+1B Speed</i></em></li>
+              <li style="--rc:var(--m-chrome)"><b>Chrome</b><span>All 10 rarities, Chrome</span><em>$2.5B <i>+2.5B Speed</i></em></li>
+              <li style="--rc:var(--m-diamond)"><b>Diamond</b><span>All 10 rarities, Diamond</span><em>$10B <i>+10B Speed</i></em></li>
+              <li style="--rc:var(--m-void)"><b>Void</b><span>All 10 rarities, Void</span><em>$50B <i>+50B Speed</i></em></li>
+              <li style="--rc:var(--m-cosmic)"><b>Cosmic</b><span>All 10 rarities, Cosmic</span><em>$250B <i>+250B Speed</i></em></li>
             </ul>
             <p class="caption">One page per mutation, with all 10 rarities in that mutation.</p>
             <h4 class="h3">The Index menu</h4>
@@ -823,7 +838,7 @@
               <li><b>Fry everything.</b> Every nugget you get home brings a customer, and even a Common keeps paying while you're offline.</li>
               <li><b>Check the biome first.</b> Look at the workers' speed of a biome before you steal there. Faster than them? Go.</li>
               <li><b>Mind the Night.</b> Every 5 minutes the field resets and every counter gets a new nugget.</li>
-              <li><b>Chase the rain.</b> The timer shows which rain is next and where. Be in that biome when it strikes.</li>
+              <li><b>Chase the rain.</b> The timer shows which rain is next, and a banner shows its 3 biomes when it starts. Be in one of them when it strikes.</li>
               <li><b>Stack mutations.</b> Every customer eating a mutated nugget makes all your customers pay +10%.</li>
               <li><b>Hunt the specials.</b> A Golden Nugget shows up every 4–8 minutes, a Prismatic every 15–25. They don't stay long.</li>
               <li><b>Read the size.</b> A big nugget over someone's head is a good one: the rarer, the bigger.</li>
@@ -847,7 +862,7 @@
               <details><summary>Can other players steal my nugget?</summary><p>Yes, but only out in the field. Get hit by a Spatula while you carry a stolen nugget and you lie still for 3 seconds while they steal it. Step into someone's Bear Trap and you drop it (anyone can grab it) and you're stuck for 7 seconds. Neither works in the safe zone.</p></details>
               <details><summary>Which rarities can I find?</summary><p>That depends on the biome. Every biome has its own most common nuggets, from Common in the Forest to Godly in Galaxy and Heaven.</p></details>
               <details><summary>How long does frying take?</summary><p>From 30 seconds for a Common to 24 hours for a Prismatic. Frying goes on while you're offline, and you can use up to 8 fryers at once.</p></details>
-              <details><summary>How do mutations work?</summary><p>Every 10 minutes a Mutation Rain hits one biome for 30 seconds. A mutation multiplies a nugget's income, from x5 (Electric) to x50 (Cosmic).</p></details>
+              <details><summary>How do mutations work?</summary><p>Every 10 minutes a Mutation Rain hits 3 biomes for 30 seconds and strikes 2 nuggets in each of them. A mutation multiplies a nugget's income, from x5 (Electric) to x50 (Cosmic).</p></details>
               <details><summary>Do I earn money while I'm offline?</summary><p>Yes, for up to 24 hours. The money waits on your Plot in a glowing circle.</p></details>
               <details><summary>How do I get faster?</summary><p>Train on your treadmill, buy better treadmills, and get Speed pets, Index rewards or Speed packs.</p></details>
               <details><summary>Where do I get pets?</summary><p>From the Egg Spinner in the hub. Hold E at it and spin 1 or up to 10 eggs at once.</p></details>
@@ -979,7 +994,7 @@
       <header class="sec-head">
         <p class="eyebrow">Weather report</p>
         <h2 class="h2 split">When it <em>rains</em>, nuggets mutate</h2>
-        <p class="sec-lede">Every 10 minutes a Mutation Rain falls on one biome for 30 seconds. A mutation comes on top of the rarity and multiplies the income.</p>
+        <p class="sec-lede">Every 10 minutes a Mutation Rain falls on 3 biomes for 30 seconds. A mutation comes on top of the rarity and multiplies the income.</p>
       </header>
 
       <div class="rain-tabs" role="tablist" aria-label="Mutations" id="rainTabs">
@@ -1005,12 +1020,12 @@
         <div class="rain-info">
           <p class="rain-forecast"><span class="rf-dot"></span> Forecast: <b id="rainTitle">Lava Rain</b></p>
           <h3 class="rain-name" id="rainName">Lava Mutation</h3>
-          <p class="rain-desc" id="rainDesc">A meteor strikes one nugget in the biome 3–7 seconds after the rain starts. While it rains, new nuggets there can turn Lava too.</p>
+          <p class="rain-desc" id="rainDesc">A meteor strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Lava too.</p>
           <ul class="rain-facts">
             <li><span>Income</span><b id="rainX">x12</b></li>
             <li><span>How often</span><b id="rainChance">10% of rains</b></li>
             <li><span>Strikes with</span><b id="rainStrike">A meteor</b></li>
-            <li><span>Lasts</span><b>30 seconds, one biome</b></li>
+            <li><span>Lasts</span><b>30 seconds, 3 biomes</b></li>
             <li class="rf-wide"><span>Living effect</span><b id="rainFx">Flames, embers and blobs of lava that pop off and splash, with a flickering glow.</b></li>
           </ul>
         </div>
