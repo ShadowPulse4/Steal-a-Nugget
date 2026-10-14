@@ -1004,12 +1004,12 @@
 
   /* =========================================================
      TREADMILL (time-lapse): speed grows while you hold the button,
-     the gauge and the biome strip use a log scale (24 → 3.4Qd)
+     the gauge and the biome strip use a log scale (24 → 5Qd)
      ========================================================= */
   const trainBtn = $("#trainBtn"), speedVal = $("#speedVal"), needle = $("#needle"), gFill = $("#gaugeFill");
   const tread = $("#treadmill"), gates = $$("#gates li");
   const reachName = $("#reachName"), reachNext = $("#reachNext");
-  const BASE = 24, MAX = 4e15, LMIN = Math.log(BASE), LMAX = Math.log(MAX);
+  const BASE = 24, MAX = 5e15, LMIN = Math.log(BASE), LMAX = Math.log(MAX);
   let speed = BASE, holding = false, lastT = 0, reachIdx = -1;
   function renderSpeed() {
     const p = (Math.log(speed) - LMIN) / (LMAX - LMIN);
@@ -1021,7 +1021,7 @@
     tread.classList.toggle("fast", holding);
     let reach = -1;
     gates.forEach((g, i) => {
-      // you need to be faster than a biome's workers to get away with its nuggets
+      // a biome opens at the speed its sign in the game asks for (faster than its workers with a nugget in your hands)
       const open = speed > +g.dataset.min;
       if (open) reach = i;
       if (open && !g.classList.contains("open")) {
@@ -1035,7 +1035,7 @@
       reachIdx = reach;
       const b = BIOMES[reach], n = BIOMES[reach + 1];
       reachName.textContent = b ? `${reach + 1}. ${b.name}` : "None yet";
-      reachNext.textContent = n ? `Next: ${n.name}, workers at ${short(n.speed)}` : "Every biome is open. Heaven is yours.";
+      reachNext.textContent = n ? `Next: ${n.name}, need ${short(+gates[reach + 1].dataset.min)}` : "Every biome is open. Heaven is yours.";
     }
   }
   function trainLoop(now) {

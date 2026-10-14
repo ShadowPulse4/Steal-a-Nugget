@@ -1488,6 +1488,7 @@ kbd { display: inline-block; min-width: 1.7em; padding: .05em .45em; border-radi
 .biomes .bn { width: 2.4rem; font-family: var(--f-mono); color: var(--muted); }
 .biomes .bname { font-family: var(--f-display); font-size: 1.05rem; color: var(--batter); }
 .biomes .bspd { font-family: var(--f-mono); color: var(--mustard); white-space: nowrap; }
+.biomes .bneed { color: var(--batter); }
 .rchip { display: inline-block; margin: .12rem .25rem .12rem 0; padding: .08rem .5rem; border-radius: 999px; background: color-mix(in srgb, var(--rc) 16%, transparent); border: 1px solid color-mix(in srgb, var(--rc) 55%, transparent); color: var(--rc); font-family: var(--f-display); font-size: .85rem; white-space: nowrap; }
 .treads .tname { font-family: var(--f-display); font-size: 1.02rem; color: var(--rc); white-space: nowrap; }
 .treads td:not(.tname) { font-family: var(--f-mono); white-space: nowrap; }
@@ -1497,6 +1498,8 @@ kbd { display: inline-block; min-width: 1.7em; padding: .05em .45em; border-radi
   .biomes .bname { font-size: .95rem; }
   .rchip { font-size: .74rem; padding: .05rem .4rem; }
   .biomes .bnug .rchip { display: block; width: fit-content; margin: .15rem 0; }
+  .biomes th, .biomes td { padding-left: .35rem; padding-right: .35rem; }
+  .biomes .bspd { font-size: .82rem; }
   .dtable th { white-space: normal; }
   .treads .tname { font-size: .92rem; white-space: normal; }
 }
@@ -1604,6 +1607,8 @@ kbd { display: inline-block; min-width: 1.7em; padding: .05em .45em; border-radi
 .trails li { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; padding: .5rem .75rem; border-radius: 12px; background: var(--crust); border: 1px solid var(--line); }
 .trails b { font-family: var(--f-display); font-weight: 400; font-size: 1rem; color: var(--batter); }
 .trails span { font-family: var(--f-mono); font-size: .78rem; color: var(--mustard); white-space: nowrap; }
+.gifts { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.gifts span { color: var(--lettuce); }
 .passes { list-style: none; margin: .6rem 0 1.4rem; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
 .passes li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .2rem .6rem; padding: .8rem 1rem; border-radius: 14px; background: var(--crust); border: 1px solid var(--line); }
 .passes b { font-family: var(--f-display); font-weight: 400; font-size: 1.1rem; color: var(--batter); }
