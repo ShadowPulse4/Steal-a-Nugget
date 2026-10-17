@@ -48,6 +48,8 @@
   --m-diamond: #9fe8ff;
   --m-void: #7a4dff;
   --m-cosmic: #c05bff;
+  --m-gold: #ffc21a;
+  --m-rainbow: #ff7af5;
 
   --rainbow: #ff4b2b, #ffc72c, #3fd34c, #1ad6e8, #3483ff, #a050ff, #ff3a72, #ff4b2b;
 
@@ -740,6 +742,8 @@ a, button, [role="tab"], .boss-art, .nugget3d { -webkit-tap-highlight-color: tra
 .rains[data-rain="chrome"] { --mc: var(--m-chrome); }
 .rains[data-rain="void"] { --mc: var(--m-void); }
 .rains[data-rain="cosmic"] { --mc: var(--m-cosmic); }
+.rains[data-rain="gold"] { --mc: var(--m-gold); }
+.rains[data-rain="rainbow"] { --mc: var(--m-rainbow); }
 .rain-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
 .rains .h2 em { color: var(--mc); }
 .rains .eyebrow { color: var(--mc); border-color: color-mix(in srgb, var(--mc) 35%, transparent); background: color-mix(in srgb, var(--mc) 10%, transparent); }

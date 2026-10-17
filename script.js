@@ -24,11 +24,11 @@
   const rand = (a, b) => a + Math.random() * (b - a);
   const RAINBOW = ["#ff4b2b", "#ffc72c", "#3fd34c", "#1ad6e8", "#a050ff", "#ff3a72"];
 
-  /* ---------- game data (from the game's own settings, 11 Oct 2026) ---------- */
+  /* ---------- game data (from the game's own settings, 17 Oct 2026) ---------- */
   const RARITIES = [
-    { id: "common",       name: "Common",       color: "#e8ad45", income: "$200/s",  fry: "30 s",       sell: "$6K"   },
-    { id: "uncommon",     name: "Uncommon",     color: "#3fd34c", income: "$500/s",  fry: "45 s",       sell: "$15K"  },
-    { id: "rare",         name: "Rare",         color: "#3483ff", income: "$1.2K/s", fry: "1.5 min",    sell: "$36K"  },
+    { id: "common",       name: "Common",       color: "#e8ad45", income: "$200/s",  fry: "10 s",       sell: "$6K"   },
+    { id: "uncommon",     name: "Uncommon",     color: "#3fd34c", income: "$500/s",  fry: "15 s",       sell: "$15K"  },
+    { id: "rare",         name: "Rare",         color: "#3483ff", income: "$1.2K/s", fry: "30 s",       sell: "$36K"  },
     { id: "super_rare",   name: "Super Rare",   color: "#1ad6e8", income: "$3K/s",   fry: "3 min",      sell: "$90K"  },
     { id: "epic",         name: "Epic",         color: "#a050ff", income: "$7K/s",   fry: "6 min",      sell: "$210K" },
     { id: "legendary",    name: "Legendary",    color: "#ff9b1c", income: "$25K/s",  fry: "12 min",     sell: "$750K" },
@@ -40,17 +40,18 @@
   const PRISMATIC = { id: "prismatic", name: "Prismatic", color: "#ff7af5", special: true };
   const byName = Object.fromEntries(RARITIES.map(r => [r.name, r]));
 
-  // the lane: workers' speed and the two most common nuggets of every biome
+  // the lane: workers' speed and the two most common nuggets of every biome (the speeds and nuggets belong
+  // to the place in the lane; since 15 Oct the biomes stand in this order, from the Ocean to Heaven)
   const BIOMES = [
-    ["Forest", 20, "Common", "Uncommon"], ["Desert", 5e3, "Common", "Uncommon"], ["Snow", 1e4, "Uncommon", "Common"],
-    ["Vulcano", 2e4, "Uncommon", "Common"], ["Ocean", 4e4, "Uncommon", "Rare"], ["Candy", 8e4, "Uncommon", "Rare"],
-    ["Crystal", 1.6e5, "Rare", "Uncommon"], ["Space", 3.2e5, "Rare", "Super Rare"], ["Jungle", 6.4e5, "Super Rare", "Rare"],
-    ["Swamp", 1.28e6, "Super Rare", "Rare"], ["Farmland", 6e6, "Super Rare", "Epic"], ["Autumn", 2.5e7, "Super Rare", "Epic"],
-    ["Sakura", 2e8, "Super Rare", "Epic"], ["Beach", 5e8, "Epic", "Super Rare"], ["Canyon", 9e8, "Epic", "Legendary"],
-    ["Mushroom", 1.75e9, "Epic", "Legendary"], ["Graveyard", 1.2e10, "Legendary", "Epic"], ["Pirate", 2.4e10, "Legendary", "Epic"],
-    ["Castle", 4e10, "Legendary", "Mythic"], ["Toyland", 2.5e11, "Legendary", "Mythic"], ["Steampunk", 6.5e11, "Mythic", "Legendary"],
-    ["Toxic", 1.1e12, "Mythic", "Super Mythic"], ["Cyber", 2.6e12, "Mythic", "Super Mythic"], ["Dino", 1.6e13, "Super Mythic", "Mythic"],
-    ["Fairy", 3.2e13, "Super Mythic", "Mythic"], ["Cloud", 1.8e14, "Super Mythic", "Ultra Mythic"], ["Rainbow", 7.5e14, "Super Mythic", "Ultra Mythic"],
+    ["Ocean", 20, "Common", "Uncommon"], ["Farmland", 5e3, "Common", "Uncommon"], ["Canyon", 1e4, "Uncommon", "Common"],
+    ["Beach", 2e4, "Uncommon", "Common"], ["Desert", 4e4, "Uncommon", "Rare"], ["Forest", 8e4, "Uncommon", "Rare"],
+    ["Snow", 1.6e5, "Rare", "Uncommon"], ["Autumn", 3.2e5, "Rare", "Super Rare"], ["Candy", 6.4e5, "Super Rare", "Rare"],
+    ["Swamp", 1.28e6, "Super Rare", "Rare"], ["Pirate", 6e6, "Super Rare", "Epic"], ["Dino", 2.5e7, "Super Rare", "Epic"],
+    ["Sakura", 2e8, "Super Rare", "Epic"], ["Jungle", 5e8, "Epic", "Super Rare"], ["Mushroom", 9e8, "Epic", "Legendary"],
+    ["Castle", 1.75e9, "Epic", "Legendary"], ["Graveyard", 1.2e10, "Legendary", "Epic"], ["Toyland", 2.4e10, "Legendary", "Epic"],
+    ["Steampunk", 4e10, "Legendary", "Mythic"], ["Vulcano", 2.5e11, "Legendary", "Mythic"], ["Toxic", 6.5e11, "Mythic", "Legendary"],
+    ["Crystal", 1.1e12, "Mythic", "Super Mythic"], ["Fairy", 2.6e12, "Mythic", "Super Mythic"], ["Space", 1.6e13, "Super Mythic", "Mythic"],
+    ["Cyber", 3.2e13, "Super Mythic", "Mythic"], ["Cloud", 1.8e14, "Super Mythic", "Ultra Mythic"], ["Rainbow", 7.5e14, "Super Mythic", "Ultra Mythic"],
     ["Royal", 1.4e15, "Ultra Mythic", "Super Mythic"], ["Galaxy", 2.4e15, "Ultra Mythic", "Godly"], ["Heaven", 3.4e15, "Ultra Mythic", "Godly"],
   ].map(([name, speed, a, b]) => ({ name, speed, common: [a, b] }));
 
@@ -62,24 +63,28 @@
   }
 
   const MUTATIONS = {
-    electric: { name: "Electric", rain: "Thunder Rain", color: "#4a8dff", img: "electric", x: 5,  chance: 25, strike: "Lightning", fx: "Electricity crackles around it.",
+    electric: { name: "Electric", rain: "Thunder Rain", color: "#4a8dff", img: "electric", x: 5,  chance: 20.3, strike: "Lightning", fx: "Electricity crackles around it.",
       desc: "Lightning strikes 2 nuggets in each of the 3 biomes (the first 3–7 seconds after the rain starts, the second 6–12 seconds later) and turns them into blue Electric Nuggets that keep crackling. While it rains, new nuggets there can turn Electric too." },
-    candy:   { name: "Candy",   rain: "Candy Rain",   color: "#ff7ab8", img: "candy",   x: 6,  chance: 18, strike: "A giant candy", fx: "Candies circle it with sweet tails, sprinkles fall off it.",
+    candy:   { name: "Candy",   rain: "Candy Rain",   color: "#ff7ab8", img: "candy",   x: 6,  chance: 14.6, strike: "A giant candy", fx: "Candies circle it with sweet tails, sprinkles fall off it.",
       desc: "A giant candy strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Candy too." },
-    frost:   { name: "Frost",   rain: "Frost Rain",   color: "#a9dcff", img: "frost",   x: 8,  chance: 15, strike: "An icicle", fx: "Ice crystals grow out of it and shatter, with snowflakes and cold mist.",
+    frost:   { name: "Frost",   rain: "Frost Rain",   color: "#a9dcff", img: "frost",   x: 8,  chance: 12.2, strike: "An icicle", fx: "Ice crystals grow out of it and shatter, with snowflakes and cold mist.",
       desc: "An icicle strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Frost too." },
-    toxic:   { name: "Toxic",   rain: "Toxic Rain",   color: "#a6f22a", img: "toxic",   x: 10, chance: 12, strike: "Goo", fx: "Slime bubbles swell up and pop, goo drips off it, rings of poison.",
+    toxic:   { name: "Toxic",   rain: "Toxic Rain",   color: "#a6f22a", img: "toxic",   x: 10, chance: 9.8, strike: "Goo", fx: "Slime bubbles swell up and pop, goo drips off it, rings of poison.",
       desc: "Goo strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Toxic too." },
-    lava:    { name: "Lava",    rain: "Lava Rain",    color: "#ff5a17", img: "lava",    x: 12, chance: 10, strike: "A meteor", fx: "Flames, embers and blobs of lava that pop off and splash, with a flickering glow.",
+    lava:    { name: "Lava",    rain: "Lava Rain",    color: "#ff5a17", img: "lava",    x: 12, chance: 8.1, strike: "A meteor", fx: "Flames, embers and blobs of lava that pop off and splash, with a flickering glow.",
       desc: "A meteor strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Lava too." },
-    chrome:  { name: "Chrome",  rain: "Chrome Rain",  color: "#d9dde3", img: "chrome",  x: 15, chance: 8,  strike: "A chrome ball", fx: "Star glints, a shine that flashes over it, steel balls circling it.",
+    chrome:  { name: "Chrome",  rain: "Chrome Rain",  color: "#d9dde3", img: "chrome",  x: 15, chance: 6.5, strike: "A chrome ball", fx: "Star glints, a shine that flashes over it, steel balls circling it.",
       desc: "A chrome ball strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Chrome too." },
-    diamond: { name: "Diamond", rain: "Diamond Rain", color: "#9fe8ff", img: "diamond", x: 20, chance: 6,  strike: "A diamond", fx: "Rays of light turn behind it, rainbow glints, little diamonds circle it.",
+    diamond: { name: "Diamond", rain: "Diamond Rain", color: "#9fe8ff", img: "diamond", x: 20, chance: 4.9, strike: "A diamond", fx: "Rays of light turn behind it, rainbow glints, little diamonds circle it.",
       desc: "A diamond strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Diamond too." },
-    void:    { name: "Void",    rain: "Void Rain",    color: "#7a4dff", img: "void",    x: 30, chance: 4,  strike: "A dark portal", fx: "A black hole with a purple vortex behind it, specks get sucked in, dark smoke.",
+    void:    { name: "Void",    rain: "Void Rain",    color: "#7a4dff", img: "void",    x: 30, chance: 3.3, strike: "A dark portal", fx: "A black hole with a purple vortex behind it, specks get sucked in, dark smoke.",
       desc: "A dark portal strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Void too." },
-    cosmic:  { name: "Cosmic",  rain: "Cosmic Rain",  color: "#c05bff", img: "cosmic",  x: 50, chance: 2,  strike: "A shooting star", fx: "Little planets circle it (one with a ring), stars twinkle, cosmic dust.",
+    cosmic:  { name: "Cosmic",  rain: "Cosmic Rain",  color: "#c05bff", img: "cosmic",  x: 50, chance: 1.6, strike: "A shooting star", fx: "Little planets circle it (one with a ring), stars twinkle, cosmic dust.",
       desc: "A shooting star strikes 2 nuggets in each of the 3 biomes: the first 3–7 seconds after the rain starts, the second 6–12 seconds later. While it rains, new nuggets there can turn Cosmic too." },
+    gold:    { name: "Gold",    rain: "Gold Rain",    color: "#ffc21a", img: "gold",    x: 3,  chance: 17.9, strike: "A spinning gold coin", fx: "Gold glints and twinkles, two gold coins spin around it.",
+      desc: "A spinning gold coin strikes 2 nuggets in each of the 3 biomes (the first 3–7 seconds after the rain starts, the second 6–12 seconds later) and bursts into coins and glitter. While it rains, new nuggets there can turn Gold too." },
+    rainbow: { name: "Rainbow", rain: "Rainbow Rain", color: "#ff7af5", img: "rainbow", x: 100, chance: 0.8, strike: "A rainbow star", fx: "Its colors keep changing, rainbow twinkles and glints, three orbs circle it.",
+      desc: "The rarest rain. A rainbow star strikes 2 nuggets in each of the 3 biomes (the first 3–7 seconds after the rain starts, the second 6–12 seconds later) and rings in every color spread out. While it rains, new nuggets there can turn Rainbow too: they pay 100x." },
   };
 
   /* =========================================================
@@ -896,11 +901,13 @@
     if (t === "diamond") Object.assign(d, { vy: rand(1.6, 3.4), vx: rand(-.4, .4), r: rand(4, 9) });
     if (t === "void") { const a = rand(0, 6.28), dist = initial ? rand(40, Math.max(rw, rh) * .6) : Math.max(rw, rh) * .6; Object.assign(d, { a, dist, r: rand(1.5, 4), vy: 0, vx: 0 }); }
     if (t === "cosmic") Object.assign(d, { vy: 0, vx: 0, r: rand(.8, 2.6), y: rand(0, rh), shoot: Math.random() < .04 });
+    if (t === "gold") Object.assign(d, { vy: rand(2.2, 4.2), vx: rand(-.4, .4), r: rand(4, 8), vr: rand(.06, .14) });
+    if (t === "rainbow") Object.assign(d, { vy: rand(1, 2.4), vx: rand(-.5, .5), r: rand(2.5, 6), c: RAINBOW[Math.floor(rand(0, RAINBOW.length))] });
     return d;
   }
   function resetRain() {
     if (!rctx) return;
-    const count = { electric: 140, candy: 120, frost: 110, toxic: 120, lava: 90, chrome: 55, diamond: 70, void: 160, cosmic: 160 }[rainType];
+    const count = { electric: 140, candy: 120, frost: 110, toxic: 120, lava: 90, chrome: 55, diamond: 70, void: 160, cosmic: 160, gold: 70, rainbow: 130 }[rainType];
     const scale = (Math.min(1, rw / 1100) * .7 + .3) * (lite ? .55 : 1);
     drops = Array.from({ length: Math.round(count * scale) }, () => makeDrop(true));
     if (reduceMotion) drawRain();
@@ -975,6 +982,24 @@
         ctx.beginPath(); ctx.moveTo(0, -d.r); ctx.lineTo(d.r * .25, -d.r * .2); ctx.lineTo(-d.r * .25, -d.r * .2); ctx.closePath(); ctx.fill();
         const a = Math.max(0, Math.sin(d.tw * 3));
         if (a > .6) { ctx.globalAlpha = a; ctx.drawImage(glintSprite, -d.r * 1.6, -d.r * 1.6, d.r * 3.2, d.r * 3.2); ctx.globalAlpha = 1; }
+      } else if (t === "gold") {
+        // a falling coin that spins: it gets narrow as it turns
+        ctx.scale(Math.max(.15, Math.abs(Math.cos(d.rot))), 1);
+        ctx.fillStyle = "#b8860b"; ctx.beginPath(); ctx.arc(0, 0, d.r, 0, 6.28); ctx.fill();
+        ctx.fillStyle = "#ffd447"; ctx.beginPath(); ctx.arc(0, 0, d.r * .78, 0, 6.28); ctx.fill();
+        ctx.fillStyle = "rgba(255,250,220,.85)"; ctx.beginPath(); ctx.arc(-d.r * .25, -d.r * .25, d.r * .22, 0, 6.28); ctx.fill();
+      } else if (t === "rainbow") {
+        // a four-point twinkle in a rainbow color
+        ctx.globalAlpha = .45 + Math.max(0, Math.sin(d.tw * 2)) * .55;
+        ctx.rotate(d.rot); ctx.fillStyle = d.c;
+        ctx.beginPath();
+        ctx.moveTo(0, -d.r * 1.6);
+        ctx.quadraticCurveTo(d.r * .2, -d.r * .2, d.r * 1.6, 0);
+        ctx.quadraticCurveTo(d.r * .2, d.r * .2, 0, d.r * 1.6);
+        ctx.quadraticCurveTo(-d.r * .2, d.r * .2, -d.r * 1.6, 0);
+        ctx.quadraticCurveTo(-d.r * .2, -d.r * .2, 0, -d.r * 1.6);
+        ctx.fill();
+        ctx.globalAlpha = 1;
       }
       ctx.restore();
       if (d.y > rh + 40 || d.x > rw + 60 || d.x < -60) Object.assign(d, makeDrop(false));
